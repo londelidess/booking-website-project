@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express');///first file to check
 require('express-async-errors');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -6,11 +6,11 @@ const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
-const routes = require('./routes');
+const routes = require('./routes');//=> go routes index
 
 const { environment } = require('./config');
 const isProduction = environment === 'production';
-
+                    //this is as development until you render so this is false at local testing
 // backend/app.js
 // ...
 const { ValidationError } = require('sequelize');
@@ -46,7 +46,7 @@ if (!isProduction) {
     })
   );
 
-app.use(routes); // Connect all the routes
+app.use(routes); // Connect all the routes / global middleware => go top
 
 // backend/app.js
 // ...
@@ -82,7 +82,7 @@ app.use((err, _req, res, _next) => {
     message: err.message,
     errors: err.errors,
     stack: isProduction ? null : err.stack
-  });
+  });     //t or f
 });
 
 // const PORT = process.env.PORT;
