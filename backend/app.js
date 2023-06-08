@@ -85,13 +85,10 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-
-
 // const PORT = process.env.PORT;
 
 // app.listen(PORT, () => {
 //     console.log(`Server is running on port ${PORT}`);
 // });--->bin/www
-
 
 module.exports = app;
