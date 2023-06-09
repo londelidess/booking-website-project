@@ -1,4 +1,3 @@
-// backend/utils/auth.js
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
 const { User } = require('../db/models');
@@ -67,12 +66,9 @@ const requireAuth = function (req, _res, next) {
 
     const err = new Error('Authentication required');
     err.title = 'Authentication required';
-    err.errors = { message: 'Authentication required' };//Unauthrized error
+    err.errors = { message: 'Authentication required' };//Unauthorized error
     err.status = 401;
     return next(err);
   }
-
-  // backend/utils/auth.js
-// ...
 
 module.exports = { setTokenCookie, restoreUser, requireAuth };

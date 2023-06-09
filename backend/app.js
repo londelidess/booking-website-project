@@ -11,8 +11,7 @@ const routes = require('./routes');//=> go routes index
 const { environment } = require('./config');
 const isProduction = environment === 'production';
                     //this is as development until you render so this is false at local testing
-// backend/app.js
-// ...
+
 const { ValidationError } = require('sequelize');
 
 const app = express();
@@ -48,8 +47,6 @@ if (!isProduction) {
 
 app.use(routes); // Connect all the routes / global middleware => go top
 
-// backend/app.js
-// ...
 // Catch unhandled requests and forward to error handler.
 app.use((_req, _res, next) => {
   const err = new Error("The requested resource couldn't be found.");

@@ -1,5 +1,3 @@
-// backend/routes/api/users.js
-
 const express = require("express");
 const bcrypt = require("bcryptjs");
 
