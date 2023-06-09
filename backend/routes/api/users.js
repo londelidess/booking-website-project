@@ -18,6 +18,20 @@ const validateSignup = [
       .not()
       .isEmail()
       .withMessage('Username cannot be an email.'),
+      check('firstName')
+      .exists({ checkFalsy: true })
+      .withMessage('Please provide a provide a first name.'),
+      check('firstName')
+      .not()
+      .isEmail()
+      .withMessage('A first name cannot be an email.'),
+      check('lastName')
+      .exists({ checkFalsy: true })
+      .withMessage('Please provide a provide a last name.'),
+      check('lastName')
+      .not()
+      .isEmail()
+      .withMessage('A last name cannot be an email.'),
     check('password')
       .exists({ checkFalsy: true })
       .isLength({ min: 6 })
@@ -30,12 +44,14 @@ router.post(
     '',
     validateSignup,
     async (req, res) => {
-      const { email, password, username } = req.body;
+      const { email, password,firstName, lastName, username } = req.body;
       const hashedPassword = bcrypt.hashSync(password);
-      const user = await User.create({ email, username, hashedPassword });
+      const user = await User.create({ email, password,firstName, lastName, username });
 
       const safeUser = {
         id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         username: user.username,
       };

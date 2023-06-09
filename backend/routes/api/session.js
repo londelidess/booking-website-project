@@ -12,7 +12,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-// Log in
+
 
 const validateLogin = [
     check('credential')
@@ -25,7 +25,7 @@ const validateLogin = [
     handleValidationErrors
   ];
 
-
+// Log in
 router.post(
     '/',
     validateLogin,
@@ -51,9 +51,13 @@ router.post(
 
       const safeUser = {
         id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         username: user.username,
       };
+
+
 
       await setTokenCookie(res, safeUser);
 
@@ -62,6 +66,14 @@ router.post(
       });
     }
   );
-
+  
+// Log out
+router.delete(
+    '/',
+    (_req, res) => {
+      res.clearCookie('token');
+      return res.json({ message: 'success' });
+    }
+  );
 
 module.exports = router;
