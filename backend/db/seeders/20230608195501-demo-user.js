@@ -22,17 +22,23 @@ module.exports = {
       {
         email: 'demo@user.io',
         username: 'Demo-lition',
-        hashedPassword: bcrypt.hashSync('password')
+        hashedPassword: bcrypt.hashSync('password'),
+        firstName: 'makoto',
+        lastName: 'doi',
       },
       {
         email: 'user1@user.io',
         username: 'FakeUser1',
-        hashedPassword: bcrypt.hashSync('password2')
+        hashedPassword: bcrypt.hashSync('password2'),
+        firstName: 'makoto',
+        lastName: 'doi',
       },
       {
         email: 'user2@user.io',
         username: 'FakeUser2',
-        hashedPassword: bcrypt.hashSync('password3')
+        hashedPassword: bcrypt.hashSync('password3'),
+        firstName: 'makoto',
+        lastName: 'doi',
       }//no need createdAt and updatedAt
     ], {});
   },
