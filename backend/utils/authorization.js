@@ -23,4 +23,16 @@ const hasRole = (role) => {
     };
   };
 
+
+  // in a routes, I use this like this
+  // const express = require('express');
+  // const { requireAuth, requireRole, requirePermission } = require('path-to-your-auth-file');
+  // const router = express.Router();
+
+  // router.get('/some-protected-route', requireAuth, requireRole('admin'), requirePermission('read'), (req, res) => {
+  //   // your route handler code here
+  // });
+
+  module.exports = router;
+
 module.exports = { hasRole, hasPermission };
