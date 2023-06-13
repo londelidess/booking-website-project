@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         hooks:true
       });
       Spot.belongsTo(models.User, {
-        foreignKey: 'ownerId'
+        foreignKey: 'ownerId',
       });
     }
   }
@@ -40,12 +40,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     ownerId: {
       type: DataTypes.INTEGER,
-      // references: {
-      //   model: 'user',
-      //   key: 'id',
-      // },
-
-      // onDelete: 'CASCADE',
     },
     address: {
       type: DataTypes.STRING(250),

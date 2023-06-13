@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey:'userId',
       });
       Booking.belongsTo(models.Spot,{
-        foreignKey: 'spotId'
+        foreignKey: 'spotId',
       });
     }
   }
@@ -23,25 +23,19 @@ module.exports = (sequelize, DataTypes) => {
     spotId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      // references: {
-      //   model: 'Spots',
-      //   key: 'id',
-      // },
+
     },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      // references: {
-      //   model: 'Users',
-      //   key: 'id',
-      // },
+
     },
     startDate: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: false
     },
     endDate: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: false
     },
   }, {
