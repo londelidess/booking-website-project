@@ -33,6 +33,4 @@ const hasRole = (role) => {
   //   // your route handler code here
   // });
 
-  module.exports = router;
-
 module.exports = { hasRole, hasPermission };
