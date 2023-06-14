@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       SpotImage.belongsTo(models.Spot, {
         foreignKey: 'spotId',
       });
-
+    }
   }
   SpotImage.init(
     {
