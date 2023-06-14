@@ -3,7 +3,7 @@ const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
 const spotsRouter = require('./spots.js');
-const reviewRouter = require('./review.js');
+// const reviewRouter = require('./review.js');
 
 // Connect restoreUser middleware to the API router
   // If current user session is valid, set req.user to the user in the database
@@ -40,7 +40,7 @@ const reviewRouter = require('./review.js');
 
   router.use('/spots', spotsRouter);
 
-  router.use('/', reviewRouter);
+  // router.use('/', reviewRouter);
 
   router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });

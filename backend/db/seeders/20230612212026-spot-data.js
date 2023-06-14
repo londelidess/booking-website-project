@@ -20,6 +20,7 @@ module.exports = {
         country: "US",
         lat: 35.198945004398304,
         lng: -111.64829615515893,
+        name:"Apple Orchard",
         description: "feel the best vibe after Sedona and grand Canyon trip",
         price: 150.0,
       },
@@ -28,7 +29,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     options.tableName =  'Spots';
-    // const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options);
+    // throw new Error('testing')
   },
 };

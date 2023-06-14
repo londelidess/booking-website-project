@@ -1,22 +1,21 @@
 const express = require("express");
 const { setTokenCookie, restoreUser, requireAuth } = require("../../utils/auth");
-const { Spot, Review, SpotImage } = require('../db/models');
-
+const { Spot, User, Review, SpotImage, ReviewImage } = require('../../db/models');
 const router = express.Router();
-
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
-
 const sequelize = require('sequelize')
-
-
 
 const validateCreateSpots = [
   check("address")
     .exists({ checkFalsy: true })
     .withMessage("Street address is required"),
-  check("city").exists({ checkFalsy: true }).withMessage("City is required"),
-  check("state").exists({ checkFalsy: true }).withMessage("State is required"),
+  check("city")
+  .exists({ checkFalsy: true })
+  .withMessage("City is required"),
+  check("state")
+  .exists({ checkFalsy: true })
+  .withMessage("State is required"),
   check("country")
     .exists({ checkFalsy: true })
     .withMessage("Country is required"),
@@ -44,6 +43,22 @@ const validateCreateSpots = [
 // Get all Spots
 router.get("/", async (req, res) => {
   const spots = await Spot.findAll({
+    attributes: [
+        'id',
+        'ownerId',
+        'address',
+        'city',
+        'state',
+        'country',
+        'lat',
+        'lng',
+        'name',
+        'description',
+        'price',
+        'createdAt',
+        'updatedAt',
+
+    ],
     include: [
         {
           model: Review,
@@ -60,12 +75,12 @@ router.get("/", async (req, res) => {
   });
 
   const reviewTotal = 0;
-  for (let i = 0; i < spot.Reviews.length; i++){
+  for (let i = 0; i < Reviews.length; i++){
       reviewTotal+= review[i].star
   }
-  const reviewAvg =0;
-  if (review.length > 0) {
-      reviewAvg = reviewTotal / review.length;
+  const reviewAvg = 0;
+  if (Reviews.length.length > 0) {
+      reviewAvg = reviewTotal / Reviews.length;
   }
 
   const spotsFormatted = spots.map(spot => ({
@@ -82,12 +97,15 @@ router.get("/", async (req, res) => {
             price: spot.price,
             createdAt: spot.createdAt,
             updatedAt: spot.updatedAt,
-            avgRating: reviewAvg
-            previewImage ,
+            avgRating: reviewAvg,
+
         }));
 
         // return res.json({ Spots: spotsFormatted });
-        res.json(spots)
+        console.log(spots)
+        res.json(spotsFormatted)
+
+
 });
 
 // Get all Spots owned by the Current User
@@ -101,31 +119,31 @@ router.get("/current", restoreUser, requireAuth, async (req, res) => {
         },
       ],
     });
-    const reviewTotal = 0;
-    for (let i = 0; i < spot.Reviews.length; i++){
-        reviewTotal+= review[i].star
-    }
-    const reviewAvg =0;
-    if (review.length > 0) {
-        reviewAvg = reviewTotal / review.length;
-    }
-    const spotsFormatted = spots.map(spot => ({
-        id: spot.id,
-            ownerId: spot.ownerId,
-            address: spot.address,
-            city: spot.city,
-            state: spot.state,
-            country: spot.country,
-            lat: spot.lat,
-            lng: spot.lng,
-            name: spot.name,
-            description: spot.description,
-            price: spot.price,
-            createdAt: spot.createdAt,
-            updatedAt: spot.updatedAt,
-            avgRating: reviewAvg
-            previewImage ,
-    }));
+    // const reviewTotal = 0;
+    // for (let i = 0; i < spot.Reviews.length; i++){
+    //     reviewTotal+= review[i].star
+    // }
+    // const reviewAvg =0;
+    // if (review.length > 0) {
+    //     reviewAvg = reviewTotal / review.length;
+    // }
+    // const spotsFormatted = spots.map(spot => ({
+    //     id: spot.id,
+    //         ownerId: spot.ownerId,
+    //         address: spot.address,
+    //         city: spot.city,
+    //         state: spot.state,
+    //         country: spot.country,
+    //         lat: spot.lat,
+    //         lng: spot.lng,
+    //         name: spot.name,
+    //         description: spot.description,
+    //         price: spot.price,
+    //         createdAt: spot.createdAt,
+    //         updatedAt: spot.updatedAt,
+    //         avgRating: reviewAvg,
+    //         // previewImage ,
+    // }));
 
     return res.json({ Spots: spotsFormatted });
   });
