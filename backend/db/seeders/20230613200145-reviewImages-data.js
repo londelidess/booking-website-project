@@ -24,13 +24,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     options.tableName = "ReviewImages";
-    options.tableName = "Reviews";
-    return queryInterface.bulkDelete(
-      options,
-      {
-        spotId: { [Op.in]: [1] },
-      },
-      {}
-    );
+    const Op = Sequelize.Op;
+    return queryInterface.bulkDelete(options);
   },
 };
