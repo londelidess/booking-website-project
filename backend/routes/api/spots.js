@@ -135,7 +135,7 @@ router.get('/current', requireAuth, async (req, res) => {
 
 //Get details of a Spot from an id
 router.get('/:spotId', async (req, res) => {
-    const spotId = parseInt(req.params.spotId, 10);
+    const spotId = req.params.spotId;
     const spot = await Spot.findByPk(spotId, {
         include: [
             Review,
@@ -220,7 +220,7 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
 
     //Add an Image to a Spot based on the Spot's id
   router.post('/:spotId/images', requireAuth, async (req, res, next) => {
-    const spotId = parseInt(req.params.spotId, 10);
+    const spotId = req.params.spotId;
     const { url, preview } = req.body;
     const spot = await Spot.findByPk(spotId);
 
@@ -251,7 +251,7 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
   //Edit a post
   router.put('/:spotId', requireAuth, validateCreateSpots, async (req, res) => {
     const{address, city, state, country,lat,lng,name,description,price} = req.body
-    const spotId = parseInt(req.params.spotId, 10);
+    const spotId = req.params.spotId;
     const spot = await Spot.findByPk(spotId);
 
     if (!spot) {
@@ -281,7 +281,7 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
 
 //   Delete a Spot
   router.delete('/:spotId', requireAuth, async (req, res) => {
-    const spotId = parseInt(req.params.spotId, 10);
+    const spotId = req.params.spotId;
     const spot = await Spot.findByPk(spotId);
 
     if (!spot) {
@@ -292,7 +292,12 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
       return res.status(403).json({ message: "User is not authorized to delete this spot" });
     }
 
-    await spot.destroy();
+    await spot.destroy({
+        where: {
+          id: spotId,
+          ownerId: userId
+        }
+      });
 
     res.json({ message: "Successfully deleted" });
 });
