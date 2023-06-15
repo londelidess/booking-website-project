@@ -13,16 +13,16 @@ module.exports = {
     options.tableName = 'Spots';
     await queryInterface.bulkInsert(options, [
 
-      {
-        address: "6 E Aspen Ave # 200",
-        city: "Flagstaff",
-        state: "AZ",
-        country: "US",
-        lat: 35.198945004398304,
-        lng: -111.64829615515893,
-        name:"Apple Orchard",
-        description: "feel the best vibe after Sedona and grand Canyon trip",
-        price: 150.0,
+      { ownerId:1,
+        address: "123 Disney Lane",
+        city: "San Francisco",
+        state: "California",
+        country: "United States of America",
+        lat: 37.7645358,
+        lng: -122.4730327,
+        name: "App Academy",
+        description: "Place where web developers are created",
+        price: 123,
       },
     ]);
   },
