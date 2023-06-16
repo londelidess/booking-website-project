@@ -140,8 +140,8 @@ const validateCreateSpots = [///this is for body
         reviewAvg = reviewTotal / spot.Reviews.length;
       }
 
-      const previewImageObj = spot.SpotImages.find(image=>image.url)
-      let imageUrl;
+      const previewImageObj = spot.SpotImages.find(image=>image.preview===true)
+      let imageUrl = null;
       if (previewImageObj) {
         imageUrl = previewImageObj.url;
       }
@@ -193,10 +193,11 @@ router.get('/current', requireAuth, async (req, res) => {
           reviewAvg = reviewTotal / spot.Reviews.length;
         }
 
-        let imageUrl;
-        if (spot.SpotImages && spot.SpotImages.length > 0 ) {;//confirming one element
-            imageUrl = spot.SpotImages[0].url
-            }
+        const previewImageObj = spot.SpotImages.find(image=>image.preview===true)
+        let imageUrl = null;
+        if (previewImageObj) {
+          imageUrl = previewImageObj.url;
+        }
 
         return {
           id: spot.id,

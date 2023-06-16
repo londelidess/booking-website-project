@@ -35,14 +35,21 @@ router.get('/bookings/current', requireAuth, async (req, res) => {
           include: [
             {
               model: SpotImage,
-              attributes: ['url'],
+              attributes:['url','preview'],
             }
           ]
         }
       ]
     });
 
-    const bookingsFormatted = bookings.map(booking => ({
+  const bookingsFormatted = bookings.map(booking => {
+    const previewImageObj = booking.Spot.SpotImages.find(image => image.preview === true);
+    let imageUrl;
+      if (previewImageObj) {
+        imageUrl = previewImageObj.url;
+      }
+
+    return {
       id: booking.id,
       spotId: booking.spotId,
       Spot: {
@@ -56,18 +63,18 @@ router.get('/bookings/current', requireAuth, async (req, res) => {
         lng: booking.Spot.lng,
         name: booking.Spot.name,
         price: booking.Spot.price,
-        previewImage: booking.Spot.SpotImages[0].url
-                //belongsTo / hasMany
+        previewImage: imageUrl
       },
       userId: booking.userId,
-      startDate: formattedDate(new Date(booking.startDate)),// converting string to js Date obj since it's in map argument. wanna change str to obj
+      startDate: formattedDate(new Date(booking.startDate)),
       endDate: formattedDate(new Date(booking.endDate)),
       createdAt: formattedDate(new Date(booking.createdAt), true),
       updatedAt: formattedDate(new Date(booking.updatedAt), true)
-    }));
-
-    res.json({ Bookings: bookingsFormatted });
+    };
   });
+
+  res.json({ Bookings: bookingsFormatted });
+});
 
 // Get all bookings for a Spot based on the Spot's id
 router.get('/spots/:spotId/bookings', requireAuth, async (req, res) => {
@@ -90,7 +97,6 @@ router.get('/spots/:spotId/bookings', requireAuth, async (req, res) => {
                 spotId: booking.spotId,
                 startDate: formattedDate(booking.startDate),
                 endDate: formattedDate(booking.endDate),
-
             }
         });
         return res.status(200).json({ Bookings: formattedBookings });///
