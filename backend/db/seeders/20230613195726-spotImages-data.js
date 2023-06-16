@@ -12,15 +12,14 @@ module.exports = {
     options.tableName = 'SpotImages';
     await queryInterface.bulkInsert(options, [{
       spotId: 1,
-      url: "https://example.com/image1.jpg",
-      preview: false,
+      url: "image url",
+      preview: true,
     }], {});
 
   },
 
   async down (queryInterface, Sequelize) {
     options.tableName = 'SpotImages';
-    // const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options);
   }
 };

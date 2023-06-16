@@ -15,7 +15,7 @@ module.exports = {
       [
         {
           reviewId: 1,
-          url: "https://example.com/reviewImage1.jpg",
+          url: "image url",
         },
       ],
       {}

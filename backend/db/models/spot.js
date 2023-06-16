@@ -65,6 +65,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(20, 14),
       allowNull: false,
     },
+    name:{
+      type: DataTypes.STRING(50),
+      allowNull:false,
+    },
     description: {
       type: DataTypes.STRING(200),
     },
