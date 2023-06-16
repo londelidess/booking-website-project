@@ -5,6 +5,7 @@ const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const sequelize = require('sequelize')
+const formattedDate = require('../../utils/date.js');
 
 const validateCreateSpots = [
   check("address")
@@ -58,7 +59,7 @@ router.get("/", async (req, res) => {
         reviewAvg = reviewTotal / spot.Reviews.length;
       }
 
-      const previewImageObj = spot.SpotImages.find(image=>image.url)
+      const previewImageObj = spot.SpotImages.find(image=>image.url)// Spot and Spot has many SpotImages
       let imageUrl;
     if (previewImageObj) {
     imageUrl = previewImageObj.url;
@@ -76,10 +77,12 @@ router.get("/", async (req, res) => {
         name: spot.name,
         description: spot.description,
         price: spot.price,
-        createdAt: spot.createdAt,
-        updatedAt: spot.updatedAt,
+        createdAt: formattedDate(spot.createdAt,true),//spot.createdAt is js object since this is in return
+        updatedAt: formattedDate(spot.updatedAt,true),
         avgRating: reviewAvg,
         previewImage:imageUrl
+        // previewImage: spot.SpotImages[0].url
+        //         //belongsTo / hasMany
       };
     });
 
@@ -122,8 +125,8 @@ router.get('/current', requireAuth, async (req, res) => {
           name: spot.name,
           description: spot.description,
           price: spot.price,
-          createdAt: spot.createdAt,
-          updatedAt: spot.updatedAt,
+          createdAt: formattedDate(spot.createdAt,true),//spot.createdAt is js object since this is in return
+        updatedAt: formattedDate(spot.updatedAt,true),
           avgRating: reviewAvg,
           previewImage: imageUrl
         };
@@ -162,6 +165,7 @@ const numReviews = spot.Reviews.length;
     if (spot.Reviews.length > 0) {
       reviewAvg = reviewTotal / spot.Reviews.length;
     }
+
 const spotsFormatted = {
     id: spot.id,
     ownerId: spot.User.id,
@@ -174,8 +178,8 @@ const spotsFormatted = {
     name: spot.name,
     description: spot.description,
     price: spot.price,
-    createdAt: spot.createdAt,
-    updatedAt: spot.updatedAt,
+    createdAt: formattedDate(new Date(spot.createdAt), true),// need to make string to obj
+      updatedAt: formattedDate(new Date(spot.updatedAt), true),
     numReviews: numReviews,
     avgStarRating: reviewAvg,
     SpotImages: spot.SpotImages.map(img => {
@@ -196,7 +200,7 @@ res.json(spotsFormatted);
 });
 
 
-// Create a Spot need to get rid of title and stack
+// Create a Spot
 router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
@@ -213,8 +217,23 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
         price,
       });
 
-      res.status(201)
-      return res.json(newSpot);
+      const formattedSpot = {
+        id: newSpot.id,
+        ownerId: newSpot.ownerId,
+        address: newSpot.address,
+        city: newSpot.city,
+        state: newSpot.state,
+        country: newSpot.country,
+        lat: newSpot.lat,
+        lng: newSpot.lng,
+        name: newSpot.name,
+        description: newSpot.description,
+        price: newSpot.price,
+        createdAt: formattedDate(new Date(newSpot.createdAt), true),
+        updatedAt: formattedDate(new Date(newSpot.updatedAt), true),
+      }
+
+      res.status(201).json(formattedSpot);
   });
 
     //Add an Image to a Spot based on the Spot's id
@@ -229,7 +248,7 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
 
     // Authorization Spot must belong to the current user
     if (spot.ownerId !== req.user.id) {
-      res.status(403).json({ message: "Unauthorized to add images to this spot" });
+      res.status(403).json({ message: "Forbidden" });
     }
 
     const image = await SpotImage.create({
@@ -258,8 +277,8 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
     }
 
     if (spot.ownerId !== req.user.id) {//Spot must belong to the current user
-      return res.status(403).json({ message: "User is not authorized to edit this spot" });
-    }
+      return res.status(403).json({ message: "Forbidden" });
+    }//Authorization
 
     spot.set({
         address: address || spot.address,
@@ -275,7 +294,24 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
 
       await spot.save();
 
-      res.json(spot);
+      const formattedSpot = {
+        id: spot.id,
+        ownerId: spot.ownerId,
+        address: spot.address,
+        city: spot.city,
+        state: spot.state,
+        country: spot.country,
+        lat: spot.lat,
+        lng: spot.lng,
+        name: spot.name,
+        description: spot.description,
+        price: spot.price,
+        createdAt: formattedDate(new Date(spot.createdAt), true),
+        updatedAt: formattedDate(new Date(spot.updatedAt), true),
+      }
+
+
+      res.json(formattedSpot);
   });
 
 //   Delete a Spot
@@ -288,7 +324,7 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
     }
 
     if (spot.ownerId !== req.user.id) { // Spot must belong to the current user
-      return res.status(403).json({ message: "User is not authorized to delete this spot" });
+      return res.status(403).json({ message: "Forbidden" });//Authorization
     }
 
     await spot.destroy({

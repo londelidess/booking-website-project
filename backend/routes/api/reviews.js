@@ -5,6 +5,7 @@ const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const sequelize = require('sequelize')
+const formattedDate = require('../../utils/date.js');
 
 const validateCreateReviews = [
     check("review")
@@ -51,7 +52,7 @@ router.get('/reviews/current', requireAuth, async (req, res) => {
 
     const reviewsFormatted = reviews.map(review => {
         const previewImageObj = review.Spot.SpotImages.find(image=>image.url)
-        //                review is belongs to Spot and Spot has many SpotImages
+        //                review is belongs to Spot and Spot and Spot has many SpotImages
         let imageUrl;
       if (previewImageObj) {
       imageUrl = previewImageObj.url;
@@ -62,8 +63,8 @@ router.get('/reviews/current', requireAuth, async (req, res) => {
           spotId: review.spotId,
           review: review.review,
           stars: review.stars,
-          createdAt: review.createdAt,
-          updatedAt: review.updatedAt,
+          createdAt: formattedDate(review.createdAt,true),//review.createdAt is js object since this is in return
+          updatedAt: formattedDate(review.updatedAt,true),
           User: {
             id: user.id,
             firstName: user.firstName,
@@ -119,8 +120,8 @@ router.get('/reviews/current', requireAuth, async (req, res) => {
       spotId: review.spotId,
       review: review.review,
       stars: review.stars,
-      createdAt: review.createdAt,
-      updatedAt: review.updatedAt,
+      createdAt: formattedDate(new Date(review.createdAt), true),// need to make string to obj
+      updatedAt: formattedDate(new Date(review.updatedAt), true),
       User: {
         id: review.User.id,
         firstName: review.User.firstName,
@@ -136,7 +137,6 @@ router.get('/reviews/current', requireAuth, async (req, res) => {
   });
 
 //Create a Review for a Spot based on the Spot's id
-
 router.post('/spots/:spotId/reviews', requireAuth, validateCreateReviews, async (req, res) => {
     const spotId = req.params.spotId;
     const spot = await Spot.findByPk(spotId);
@@ -155,14 +155,27 @@ router.post('/spots/:spotId/reviews', requireAuth, validateCreateReviews, async 
       return res.status(500).json({ message: "User already has a review for this spot" });
     }
 
-    const review = await Review.create({
+    const newReview = await Review.create({
       userId: req.user.id,
       spotId,
       review: req.body.review,
-      stars: req.body.stars
+      stars: req.body.stars,
     });
 
-    res.status(201).json(review);
+    // const newReview = await Review.findOne({
+    //     where: { id: review.id }
+    //   });//fetch again to modify review style
+      const formattedReview = {
+        id: newReview.id,
+        userId: newReview.userId,
+        spotId: newReview.spotId,
+        review: newReview.review,
+        stars: newReview.stars,
+        createdAt: formattedDate(new Date(newReview.createdAt), true),
+        updatedAt: formattedDate(new Date(newReview.updatedAt), true),
+      }
+
+      res.status(201).json(formattedReview);
   });
 
 
@@ -200,29 +213,45 @@ router.post('/reviews/:reviewId/images', requireAuth, async (req, res) => {
     res.json(response);
   });
 
-// Edit a Review ***unexpected token
+// Edit a Review
 router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req, res) => {
-    const {newReview, stars} = req.body
+    // const {review: newReview, stars} = req.body ,we can alias
+    const {review, stars} = req.body
     const reviewId = req.params.reviewId;
-    const review = await Review.findByPk(reviewId);
+    const existingReview = await Review.findByPk(reviewId);
 
-    if (!review) {
+    if (!existingReview) {
       return res.status(404).json({ message: "Review couldn't be found" });
     }
 
-    if (review.userId !== req.user.id) {
-      return res.status(403).json({ message: "User is not authorized to edit this review" });
-    }
+    if (existingReview.userId !== req.user.id) {
+      return res.status(403).json({ message:"Forbidden"});
+    }///Authorization
 
-    review.set({
-        review: newReview || review.review,
-        stars: stars || review.stars,
+    existingReview.set({
+        //   review: newReview || review.review, if you alias
+        review: review || existingReview.review,
+        stars: stars || existingReview.stars,
       });
 
-      await spot.save();
+      await existingReview.save();/// you already have a current data so no need to fetch again
 
-    res.json(review);
-  });
+    //   let updatedReview = await Review.findOne({
+    //     where: { id: existingReview.id }
+    //   });
+
+       const updatedReview = {
+        id: existingReview.id,
+        spotId: existingReview.spotId,
+        userId: existingReview.userId,
+        review: existingReview.review,
+        stars: existingReview.stars,
+        createdAt: formattedDate(new Date(existingReview.createdAt), true),
+        updatedAt: formattedDate(new Date(existingReview.updatedAt), true),
+      }
+
+    res.json(updatedReview);
+});
 
 //   Delete a Review
   router.delete('/reviews/:reviewId', requireAuth, async (req, res) => {
@@ -234,8 +263,8 @@ router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req,
     }
 
     if (review.userId !== req.user.id) {
-      return res.status(403).json({ message: "User is not authorized to delete this review" });
-    }
+      return res.status(403).json({ message: "Forbidden" });
+    }//Authorization
 
     await review.destroy({
         where: {
@@ -243,6 +272,8 @@ router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req,
           userId: userId
         }
       });
+
+
 
     res.json({ message: "Successfully deleted" });
   });

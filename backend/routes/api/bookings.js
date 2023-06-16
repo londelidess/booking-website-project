@@ -5,51 +5,70 @@ const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const { Sequelize, Op } = require('sequelize');
+const formattedDate = require('../../utils/date.js');
 
-// const validateCreateBookings = [
-//     check("review")
-//         .notEmpty()
-//         .withMessage('Review text is required'),
-//     check('stars')
-//         .isInt({ min: 1, max: 5 })
-//         .withMessage('Stars must be an integer from 1 to 5'),
-//   handleValidationErrors,
-// ];
 
-// Get all of the Current User's Bookings***needet to be reformatted for res
+const validateCreateBookings = [
+    check("review")
+        .notEmpty()
+        .withMessage('Review text is required'),
+    check('stars')
+        .isInt({ min: 1, max: 5 })
+        .withMessage('Stars must be an integer from 1 to 5'),
+  handleValidationErrors,
+];
+
+// Get all of the Current User's Bookings
 router.get('/bookings/current', requireAuth, async (req, res) => {
-    const userId = req.user.id;
+    const user = await User.findByPk(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User couldn't be found" });
+    }
 
     const bookings = await Booking.findAll({
-        where: { userId },  // Find all bookings of the current user
-        include: [
+      where: { userId: req.user.id },
+      include: [
+        {
+          model: Spot,
+          attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+          include: [
             {
-                model: Spot,
-                include: [
-                    {
-                        model: SpotImage,
-                        // where: { preview: true },
-                        // required: false
-                    }
-                ]
+              model: SpotImage,
+              attributes: ['url'],
             }
-        ],
-    });
-
-    if (!bookings) {
-        return res.status(404).json({ error: 'No bookings found for the current user' });
-    }
-    const reformattedBookings = bookings.map(booking => {
-        const bookingJson = booking.toJSON();  // Convert booking instance to plain object
-        if (bookingJson.Spot.SpotImages[0]) {
-            bookingJson.Spot.previewImage = bookingJson.Spot.SpotImages[0].url;
+          ]
         }
-        delete bookingJson.Spot.SpotImages;  // Remove SpotImages field
-        return bookingJson;
+      ]
     });
 
-    res.status(200).json({ Bookings: reformattedBookings });
-});
+    const bookingsFormatted = bookings.map(booking => ({
+      id: booking.id,
+      spotId: booking.spotId,
+      Spot: {
+        id: booking.Spot.id,
+        ownerId: booking.Spot.ownerId,
+        address: booking.Spot.address,
+        city: booking.Spot.city,
+        state: booking.Spot.state,
+        country: booking.Spot.country,
+        lat: booking.Spot.lat,
+        lng: booking.Spot.lng,
+        name: booking.Spot.name,
+        price: booking.Spot.price,
+        previewImage: booking.Spot.SpotImages[0].url
+                //belongsTo / hasMany
+      },
+      userId: booking.userId,
+      startDate: formattedDate(new Date(booking.startDate)),// converting string to js Date obj since it's in map argument. wanna change str to obj
+      endDate: formattedDate(new Date(booking.endDate)),
+      createdAt: formattedDate(new Date(booking.createdAt), true),
+      updatedAt: formattedDate(new Date(booking.updatedAt), true)
+    }));
+
+    res.json({ Bookings: bookingsFormatted });
+  });
+
 
 //Get all Bookings for a Spot based on the Spot's id
 router.get('/spots/:spotId/bookings', requireAuth, async (req, res) => {
