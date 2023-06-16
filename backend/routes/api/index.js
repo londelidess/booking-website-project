@@ -66,6 +66,5 @@ const spotImagesRouter = require('./spotImages.js')
 //   }
 // );
 
-// ...
 
 module.exports = router;
