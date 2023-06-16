@@ -16,14 +16,18 @@ router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
             {
                 model: Spot,
                 where: { ownerId: userId },
-                // make sure the Spot belongs to the current user
+      // make sure the Spot belongs to the current user
             },
         ],
     });
 
     if (!spotImage) {
-      return res.status(404).json({ message: "Spot Image couldn't be found or user is not authorized to delete this image" });
+      return res.status(404).json({ message: "Spot Image couldn't be found" });
     }
+
+    if (spotImage.Spot.ownerId !== userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    } // Authorization
 
     await SpotImage.destroy({
       where: {
@@ -36,7 +40,7 @@ router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
 
 // Delete a Review Image
 router.delete('/review-images/:imageId', requireAuth, async (req, res) => {
-    const imageId = parseInt(req.params.imageId, 10);
+    const imageId = req.params.imageId;
     const userId = req.user.id;
 
     const reviewImage = await ReviewImage.findByPk(imageId, {
@@ -49,8 +53,12 @@ router.delete('/review-images/:imageId', requireAuth, async (req, res) => {
     });
 
     if (!reviewImage) {
-      return res.status(404).json({ message: "Review Image couldn't be found or user is not authorized to delete this image" });
+      return res.status(404).json({ message: "Review Image couldn't be found" });
     }
+
+    if (reviewImage.Review.userId !== userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    } // Authorization
 
     await ReviewImage.destroy({
       where: {

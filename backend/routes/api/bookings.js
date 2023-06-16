@@ -201,7 +201,7 @@ router.post('/spots/:spotId/bookings', requireAuth, async (req, res) => {
 });
 
 // Edit a Booking
-router.put('/bookings/:bookingId', requireAuth, async (req, res, next) => {
+router.put('/bookings/:bookingId', requireAuth, async (req, res) => {
     const { startDate, endDate } = req.body;
     const { bookingId } = req.params;
     const userId = req.user.id;
