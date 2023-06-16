@@ -38,10 +38,9 @@ router.get('/reviews/current', requireAuth, async (req, res) => {
                 include:[
                     {
                       model: SpotImage,
-                      attributes:['url']
+                      attributes:['url','preview']
                     }
                   ]
-
             },
             {
                 model: ReviewImage,
@@ -51,9 +50,9 @@ router.get('/reviews/current', requireAuth, async (req, res) => {
     });
 
     const reviewsFormatted = reviews.map(review => {
-        const previewImageObj = review.Spot.SpotImages.find(image=>image.url)
+        const previewImageObj = review.Spot.SpotImages.find(image=>image.preview === true)
         //                review is belongs to Spot and Spot and Spot has many SpotImages
-        let imageUrl;
+        let imageUrl = null;
       if (previewImageObj) {
       imageUrl = previewImageObj.url;
       }
@@ -178,7 +177,6 @@ router.post('/spots/:spotId/reviews', requireAuth, validateCreateReviews, async 
       res.status(201).json(formattedReview);
   });
 
-
 // Add an Image to a Review based on the Review's id****how to make it reached
 router.post('/reviews/:reviewId/images', requireAuth, async (req, res) => {
     const reviewId = req.params.reviewId;
@@ -195,10 +193,10 @@ router.post('/reviews/:reviewId/images', requireAuth, async (req, res) => {
     const existingImages = await ReviewImage.findAndCountAll({
       where: { reviewId },
     });
-
+// console.log(existingImages)
     if (existingImages.count >= 10) {
       return res.status(403).json({ message: "Maximum number of images for this review was reached" });
-    }///////////
+    }
 
     const image = await ReviewImage.create({
       reviewId,
