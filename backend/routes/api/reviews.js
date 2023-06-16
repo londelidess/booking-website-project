@@ -189,8 +189,8 @@ router.post('/reviews/:reviewId/images', requireAuth, async (req, res) => {
     }
 
     if (review.userId !== req.user.id) {
-      return res.status(403).json({ message: "User is not authorized to add images to this review" });
-    }
+      return res.status(403).json({ message: "Forbidden" });
+    }///Authorization
 
     const existingImages = await ReviewImage.findAndCountAll({
       where: { reviewId },
@@ -198,7 +198,7 @@ router.post('/reviews/:reviewId/images', requireAuth, async (req, res) => {
 
     if (existingImages.count >= 10) {
       return res.status(403).json({ message: "Maximum number of images for this review was reached" });
-    }
+    }///////////
 
     const image = await ReviewImage.create({
       reviewId,
@@ -234,11 +234,7 @@ router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req,
         stars: stars || existingReview.stars,
       });
 
-      await existingReview.save();/// you already have a current data so no need to fetch again
-
-    //   let updatedReview = await Review.findOne({
-    //     where: { id: existingReview.id }
-    //   });
+      await existingReview.save();
 
        const updatedReview = {
         id: existingReview.id,

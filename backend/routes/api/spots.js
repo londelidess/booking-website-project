@@ -4,10 +4,10 @@ const { Spot, User, Review, SpotImage, ReviewImage } = require('../../db/models'
 const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
-const sequelize = require('sequelize')
+const {sequelize,Op} = require('sequelize')
 const formattedDate = require('../../utils/date.js');
 
-const validateCreateSpots = [
+const validateCreateSpots = [///this is for body
   check("address")
     .exists({ checkFalsy: true })
     .withMessage("Street address is required"),
@@ -42,9 +42,90 @@ const validateCreateSpots = [
 ];
 
 // Get all Spots
-router.get("/", async (req, res) => {
+  router.get("/", async (req, res) => {
+    let { page='1', size='20', minLat, maxLat, minLng, maxLng, minPrice, maxPrice} = req.query;
+
+    page = parseInt(page);
+    size = parseInt(size);
+
+    const where ={};
+    const errors = {};
+
+  if (Number.isNaN(page) || page < 1 || page > 10) {
+    errors.page = "Page must be greater than or equal to 1 and less than or equal to 10";
+  }
+
+  if (Number.isNaN(size) || size < 1 || size > 20) {
+    errors.size ="Size must be greater than or equal to 1 and less than or equal to 20";
+  }
+
+  if (minLat !== undefined) {
+    minLat = parseFloat(minLat);
+    if (Number.isNaN(minLat) || minLat < -90 || minLat > 90) {
+      errors.minLat = "Minimum latitude is invalid";
+    } else {
+      where.lat = { [sequelize.Op.gte]: minLat };
+    }
+  }
+
+  if (maxLat !== undefined) {
+    maxLat = parseFloat(maxLat);
+    if (Number.isNaN(maxLat) || maxLat < -90 || maxLat > 90) {
+      errors.maxLat = "Maximum latitude is invalid";
+    } else {
+      where.lat = { ...where.lat, [sequelize.Op.lte]: maxLat };
+    }
+  }
+
+  if (minLng !== undefined) {
+    minLng = parseFloat(minLng);
+    if (Number.isNaN(minLng) || minLng < -180 || minLng > 180) {
+      errors.minLng = "Minimum longitude is invalid";
+    } else {
+      where.lng = { [sequelize.Op.gte]: minLng };
+    }
+  }
+
+  if (maxLng !== undefined) {
+    maxLng = parseFloat(maxLng);
+    if (Number.isNaN(maxLng) || maxLng < -180 || maxLng > 180) {
+      errors.maxLng = "Maximum longitude is invalid";
+    } else {
+      where.lng = { ...where.lng, [sequelize.Op.lte]: maxLng };
+    }
+  }
+
+  if (minPrice !== undefined) {
+    minPrice = parseFloat(minPrice);
+    if (Number.isNaN(minPrice) || minPrice < 0) {
+      errors.minPrice = "Minimum price must be greater than or equal to 0";
+    } else {
+      where.price = { [sequelize.Op.gte]: minPrice };
+    }
+  }
+
+  if (maxPrice !== undefined) {
+    maxPrice = parseFloat(maxPrice);
+    if (Number.isNaN(maxPrice) || maxPrice < 0) {
+      errors.maxPrice = "Maximum price must be greater than or equal to 0";
+    } else {
+      where.price = { ...where.price, [sequelize.Op.lte]: maxPrice };
+    }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ message: "Bad Request", errors });
+  }
+
+    const pagination = {
+      limit: size,
+      offset: size * (page - 1)
+    };
+
     const spots = await Spot.findAll({
-      include: [Review,SpotImage]
+      where,
+      include: [Review,SpotImage],
+      ...pagination
     });
 
     const spotsFormatted = spots.map(spot => {
@@ -59,11 +140,11 @@ router.get("/", async (req, res) => {
         reviewAvg = reviewTotal / spot.Reviews.length;
       }
 
-      const previewImageObj = spot.SpotImages.find(image=>image.url)// Spot and Spot has many SpotImages
+      const previewImageObj = spot.SpotImages.find(image=>image.url)
       let imageUrl;
-    if (previewImageObj) {
-    imageUrl = previewImageObj.url;
-    }
+      if (previewImageObj) {
+        imageUrl = previewImageObj.url;
+      }
 
       return {
         id: spot.id,
@@ -86,7 +167,11 @@ router.get("/", async (req, res) => {
       };
     });
 
-    res.json({ Spots: spotsFormatted });
+    res.json({
+      Spots: spotsFormatted,
+      page,
+      size
+    });
   });
 
 
