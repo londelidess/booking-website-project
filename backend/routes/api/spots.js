@@ -413,12 +413,7 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });//Authorization
     }
 
-    await spot.destroy({
-        where: {
-          id: spotId,
-          ownerId: userId
-        }
-      });
+    await spot.destroy();
 
     res.json({ message: "Successfully deleted" });
 });

@@ -44,7 +44,7 @@ router.get('/reviews/current', requireAuth, async (req, res) => {
             },
             {
                 model: ReviewImage,
-                attributes: ['id', 'URL']
+                attributes: ['id', 'url']///
             }
         ]
     });
@@ -260,12 +260,7 @@ router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req,
       return res.status(403).json({ message: "Forbidden" });
     }//Authorization
 
-    await review.destroy({
-        where: {
-          id: reviewId,
-          userId: userId
-        }
-      });
+    await review.destroy();
 
 
 
