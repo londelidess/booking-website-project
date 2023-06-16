@@ -16,61 +16,82 @@ const validateCreateReviews = [
   handleValidationErrors,
 ];
 
-// Get all Reviews of the Current User****resource required
-router.get('reviews/current', requireAuth, async (req, res) => {
+// Get all Reviews of the Current User
+router.get('/reviews/current', requireAuth, async (req, res) => {
     const user = await User.findByPk(req.user.id);
 
-    if (!user) {
+    if (!user) {////////how do i check this
       return res.status(404).json({ message: "User couldn't be found" });
     }
 
-    const reviews = await user.getReviews({//lazy loading
-      include: [
-        {
-          model: Spot,
-          attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price', 'previewImage']
-        },
-        {
-          model: ReviewImage,
-          attributes: ['id', 'url']
-        }
-      ]
+    const reviews = await Review.findAll({
+        where: { userId: req.user.id },
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                model: Spot,
+                attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+                include:[
+                    {
+                      model: SpotImage,
+                      attributes:['url']
+                    }
+                  ]
+
+            },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'URL']
+            }
+        ]
     });
 
-    const reviewsFormatted = reviews.map(review => ({
-      id: review.id,
-      userId: review.userId,
-      spotId: review.spotId,
-      review: review.review,
-      stars: review.stars,
-      createdAt: review.createdAt,
-      updatedAt: review.updatedAt,
-      User: {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName
-      },
-      Spot: {
-        id: review.Spot.id,
-        ownerId: review.Spot.ownerId,
-        address: review.Spot.address,
-        city: review.Spot.city,
-        state: review.Spot.state,
-        country: review.Spot.country,
-        lat: review.Spot.lat,
-        lng: review.Spot.lng,
-        name: review.Spot.name,
-        price: review.Spot.price,
-        previewImage: review.Spot.previewImage
-      },
-      ReviewImages: {
-        id: image.id,
-        url: image.url
+    const reviewsFormatted = reviews.map(review => {
+        const previewImageObj = review.Spot.SpotImages.find(image=>image.url)
+        //                review is belongs to Spot and Spot has many SpotImages
+        let imageUrl;
+      if (previewImageObj) {
+      imageUrl = previewImageObj.url;
       }
-    }));
+        return {
+          id: review.id,
+          userId: review.userId,
+          spotId: review.spotId,
+          review: review.review,
+          stars: review.stars,
+          createdAt: review.createdAt,
+          updatedAt: review.updatedAt,
+          User: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName
+          },
+          Spot: {
+            id: review.Spot.id,
+            ownerId: review.Spot.ownerId,
+            address: review.Spot.address,
+            city: review.Spot.city,
+            state: review.Spot.state,
+            country: review.Spot.country,
+            lat: review.Spot.lat,
+            lng: review.Spot.lng,
+            name: review.Spot.name,
+            price: review.Spot.price,
+            previewImage: imageUrl,
+          },
+          ReviewImages: review.ReviewImages.map(image => ({
+            id: image.id,
+            url: image.url
+          }))
+        }
+      });
 
     res.json({ Reviews: reviewsFormatted });
   });
+
 // Get all Reviews by a Spot's id
   router.get('/spots/:spotId/reviews', async (req, res) => {
     const spotId = req.params.spotId;
@@ -114,7 +135,7 @@ router.get('reviews/current', requireAuth, async (req, res) => {
     res.json({ Reviews: reviewsFormatted });
   });
 
-//Create a Review for a Spot based on the Spot's id****title and stack need to be excluded for the error 400
+//Create a Review for a Spot based on the Spot's id
 
 router.post('/spots/:spotId/reviews', requireAuth, validateCreateReviews, async (req, res) => {
     const spotId = req.params.spotId;
@@ -182,7 +203,7 @@ router.post('/reviews/:reviewId/images', requireAuth, async (req, res) => {
 // Edit a Review ***unexpected token
 router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req, res) => {
     const {newReview, stars} = req.body
-    const reviewId = parseInt(req.params.reviewId, 10);
+    const reviewId = req.params.reviewId;
     const review = await Review.findByPk(reviewId);
 
     if (!review) {

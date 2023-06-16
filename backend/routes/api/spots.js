@@ -49,7 +49,6 @@ router.get("/", async (req, res) => {
     const spotsFormatted = spots.map(spot => {
       let reviewTotal = 0;
 
-
       for (let i = 0; i < spot.Reviews.length; i++){
         reviewTotal += spot.Reviews[i].stars;
       }
@@ -59,11 +58,12 @@ router.get("/", async (req, res) => {
         reviewAvg = reviewTotal / spot.Reviews.length;
       }
 
-      const previewImageObj = spot.SpotImages.find(image=>image.preview)
-      let imageUrl = "image url";
+      const previewImageObj = spot.SpotImages.find(image=>image.url)
+      let imageUrl;
     if (previewImageObj) {
     imageUrl = previewImageObj.url;
     }
+
       return {
         id: spot.id,
         ownerId: spot.ownerId,
@@ -91,7 +91,7 @@ router.get("/", async (req, res) => {
 router.get('/current', requireAuth, async (req, res) => {
     const spots = await Spot.findAll({///[]array so need to loop
       where: { ownerId: req.user.id },
-      include: [Review],
+      include: [Review,SpotImage],
     });
 
     const spotsFormatted = spots.map(spot => {
@@ -105,11 +105,10 @@ router.get('/current', requireAuth, async (req, res) => {
           reviewAvg = reviewTotal / spot.Reviews.length;
         }
 
-        // const previewImageObj = spot.SpotImages.find(image=>image.preview)
-        let imageUrl = "image url";
-        // if (previewImageObj) {
-        // imageUrl = previewImageObj.url;
-        // }
+        let imageUrl;
+        if (spot.SpotImages && spot.SpotImages.length > 0 ) {;//confirming one element
+            imageUrl = spot.SpotImages[0].url
+            }
 
         return {
           id: spot.id,
@@ -126,7 +125,7 @@ router.get('/current', requireAuth, async (req, res) => {
           createdAt: spot.createdAt,
           updatedAt: spot.updatedAt,
           avgRating: reviewAvg,
-          previewImage:imageUrl
+          previewImage: imageUrl
         };
       });
 
@@ -197,7 +196,7 @@ res.json(spotsFormatted);
 });
 
 
-// Create a Spot need to get rid of title and stack************
+// Create a Spot need to get rid of title and stack
 router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
