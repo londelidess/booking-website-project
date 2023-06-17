@@ -17,8 +17,8 @@ const validateCreateReviews = [
   handleValidationErrors,
 ];
 
-// Get all Reviews of the Current User
-router.get('/reviews/current', requireAuth, async (req, res) => {
+// Get all Reviews of the Current User // Specific routes first
+router.get('/current', requireAuth, async (req, res) => {
     const user = await User.findByPk(req.user.id);
 
     if (!user) {////////how do i check this
@@ -92,94 +92,9 @@ router.get('/reviews/current', requireAuth, async (req, res) => {
     res.json({ Reviews: reviewsFormatted });
   });
 
-// Get all Reviews by a Spot's id
-  router.get('/spots/:spotId/reviews', async (req, res) => {
-    const spotId = req.params.spotId;
-    const reviews = await Review.findAll({
-      where: { spotId },
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'firstName', 'lastName']
-        },
-        {
-          model: ReviewImage,
-          attributes: ['id', 'url']
-        }
-      ]
-    });
-
-    if (!reviews.length) {
-      return res.status(404).json({ message: "Spot couldn't be found" });
-    }
-
-    const reviewsFormatted = reviews.map(review => ({
-      id: review.id,
-      userId: review.userId,
-      spotId: review.spotId,
-      review: review.review,
-      stars: review.stars,
-      createdAt: formattedDate(new Date(review.createdAt), true),// need to make string to obj
-      updatedAt: formattedDate(new Date(review.updatedAt), true),
-      User: {
-        id: review.User.id,
-        firstName: review.User.firstName,
-        lastName: review.User.lastName
-      },
-      ReviewImages: review.ReviewImages.map(image => ({
-        id: image.id,
-        url: image.url
-      }))
-    }));
-
-    res.json({ Reviews: reviewsFormatted });
-  });
-
-//Create a Review for a Spot based on the Spot's id
-router.post('/spots/:spotId/reviews', requireAuth, validateCreateReviews, async (req, res) => {
-    const spotId = req.params.spotId;
-    const spot = await Spot.findByPk(spotId);
-    if (!spot) {
-      return res.status(404).json({ message: "Spot couldn't be found" });
-    }
-
-    const existingReview = await Review.findOne({
-      where: {
-        spotId,
-        userId: req.user.id
-      }
-    });
-
-    if (existingReview) {
-      return res.status(500).json({ message: "User already has a review for this spot" });
-    }
-
-    const newReview = await Review.create({
-      userId: req.user.id,
-      spotId,
-      review: req.body.review,
-      stars: req.body.stars,
-    });
-
-    // const newReview = await Review.findOne({
-    //     where: { id: review.id }
-    //   });//fetch again to modify review style
-      const formattedReview = {
-        id: newReview.id,
-        userId: newReview.userId,
-        spotId: newReview.spotId,
-        review: newReview.review,
-        stars: newReview.stars,
-        createdAt: formattedDate(new Date(newReview.createdAt), true),
-        updatedAt: formattedDate(new Date(newReview.updatedAt), true),
-      }
-
-      res.status(201).json(formattedReview);
-  });
-
-// Add an Image to a Review based on the Review's id****how to make it reached
-router.post('/reviews/:reviewId/images', requireAuth, async (req, res) => {
-    const reviewId = req.params.reviewId;
+// Add an Image to a Review based on the Review's id
+router.post('/:reviewId/images', requireAuth, async (req, res) => {
+    const reviewId = parseInt(req.params.reviewId,10);
     const review = await Review.findByPk(reviewId);
 
     if (!review) {
@@ -212,10 +127,10 @@ router.post('/reviews/:reviewId/images', requireAuth, async (req, res) => {
   });
 
 // Edit a Review
-router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req, res) => {
+router.put('/:reviewId', requireAuth, validateCreateReviews, async (req, res) => {
     // const {review: newReview, stars} = req.body ,we can alias
     const {review, stars} = req.body
-    const reviewId = req.params.reviewId;
+    const reviewId = parseInt(req.params.reviewId,10);
     const existingReview = await Review.findByPk(reviewId);
 
     if (!existingReview) {
@@ -248,8 +163,8 @@ router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req,
 });
 
 //   Delete a Review
-  router.delete('/reviews/:reviewId', requireAuth, async (req, res) => {
-    const reviewId = req.params.reviewId;
+  router.delete('/:reviewId', requireAuth, async (req, res) => {
+    const reviewId = parseInt(req.params.reviewId,10);
     const review = await Review.findByPk(reviewId);
 
     if (!review) {
@@ -261,8 +176,6 @@ router.put('/reviews/:reviewId', requireAuth, validateCreateReviews, async (req,
     }//Authorization
 
     await review.destroy();
-
-
 
     res.json({ message: "Successfully deleted" });
   });
