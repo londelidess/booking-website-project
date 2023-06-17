@@ -8,7 +8,7 @@ const sequelize = require('sequelize')
 
 // Delete a Spot Image
 router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
-    const imageId = req.params.imageId
+    const imageId = parseInt(req.params.imageId,10)
     const userId = req.user.id;
 
     const spotImage = await SpotImage.findByPk(imageId, {
@@ -29,19 +29,15 @@ router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });
     } // Authorization
 
-    await SpotImage.destroy({
-      where: {
-        id: imageId,
-      }
-    });
+    await SpotImage.destroy();
 
     res.json({ message: "Successfully deleted" });
 });
 
 // Delete a Review Image
 router.delete('/review-images/:imageId', requireAuth, async (req, res) => {
-    const imageId = req.params.imageId;
-    const userId = req.user.id;
+    const imageId = parseInt(req.params.imageId,10);
+    const userId = parseInt(req.user.id,10);
 
     const reviewImage = await ReviewImage.findByPk(imageId, {
         include: [
@@ -60,11 +56,7 @@ router.delete('/review-images/:imageId', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });
     } // Authorization
 
-    await ReviewImage.destroy({
-      where: {
-        id: imageId,
-      }
-    });
+    await ReviewImage.destroy();
 
     res.json({ message: "Successfully deleted" });
 });
