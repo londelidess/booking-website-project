@@ -81,11 +81,11 @@ router.get('/current', requireAuth, async (req, res) => {
         city: spot.city,
         state: spot.state,
         country: spot.country,
-        lat: spot.lat,
-        lng: spot.lng,
+        lat: parseFloat(spot.lat),
+        lng: parseFloat(spot.lng),
         name: spot.name,
         description: spot.description,
-        price: spot.price,
+        price: parseFloat(spot.price),
         createdAt: formattedDate(spot.createdAt,true),//spot.createdAt is js object since this is in return
       updatedAt: formattedDate(spot.updatedAt,true),
         avgRating: reviewAvg,
@@ -132,7 +132,7 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
     res.status(201).json(formattedSpot);
 });
 
-//Edit a post
+//Edit a spot
 router.put('/:spotId', requireAuth, validateCreateSpots, async (req, res) => {
   const{address, city, state, country,lat,lng,name,description,price} = req.body
   const spotId = parseInt(req.params.spotId,10);
@@ -167,11 +167,11 @@ router.put('/:spotId', requireAuth, validateCreateSpots, async (req, res) => {
       city: spot.city,
       state: spot.state,
       country: spot.country,
-      lat: spot.lat,
-      lng: spot.lng,
+      lat: parseFloat(spot.lat),
+      lng: parseFloat(spot.lng),
       name: spot.name,
       description: spot.description,
-      price: spot.price,
+      price: parseFloat(spot.price),
       createdAt: formattedDate(new Date(spot.createdAt), true),
       updatedAt: formattedDate(new Date(spot.updatedAt), true),
     }
@@ -408,11 +408,11 @@ const spotsFormatted = {
   city: spot.city,
   state: spot.state,
   country: spot.country,
-  lat: spot.lat,
-  lng: spot.lng,
+  lat: parseFloat(spot.lat),
+  lng: parseFloat(spot.lng),
   name: spot.name,
   description: spot.description,
-  price: spot.price,
+  price: parseFloat(spot.price),
   createdAt: formattedDate(new Date(spot.createdAt), true),// need to make string to obj
     updatedAt: formattedDate(new Date(spot.updatedAt), true),
   numReviews: numReviews,
@@ -619,11 +619,11 @@ if (Object.keys(errors).length > 0) {
       city: spot.city,
       state: spot.state,
       country: spot.country,
-      lat: spot.lat,
-      lng: spot.lng,
+      lat: parseFloat(spot.lat),
+      lng: parseFloat(spot.lng),
       name: spot.name,
       description: spot.description,
-      price: spot.price,
+      price: parseFloat(spot.price),
       createdAt: formattedDate(spot.createdAt,true),//spot.createdAt is js object since this is in return
       updatedAt: formattedDate(spot.updatedAt,true),
       avgRating: reviewAvg,

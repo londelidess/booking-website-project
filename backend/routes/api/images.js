@@ -29,14 +29,14 @@ router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });
     } // Authorization
 
-    await SpotImage.destroy(
+    await SpotImage.destroy(// delete spotimages only user is the owner
         {
         where: {
           id: imageId
         }
       }
     );
-
+    // await spotImage.destroy() deleting spotimages regardless owner
     res.json({ message: "Successfully deleted" });
 });
 
@@ -69,7 +69,7 @@ router.delete('/review-images/:imageId', requireAuth, async (req, res) => {
         }
       }
     );
-
+    // await reviewImage.destroy()
     res.json({ message: "Successfully deleted" });
 });
 
