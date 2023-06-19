@@ -120,11 +120,11 @@ router.post('/', requireAuth, validateCreateSpots, async (req, res) => {
       city: newSpot.city,
       state: newSpot.state,
       country: newSpot.country,
-      lat: newSpot.lat,
-      lng: newSpot.lng,
+      lat: parseFloat(newSpot.lat),///
+      lng: parseFloat(newSpot.lng),///
       name: newSpot.name,
       description: newSpot.description,
-      price: newSpot.price,
+      price: parseFloat(newSpot.price),
       createdAt: formattedDate(new Date(newSpot.createdAt), true),
       updatedAt: formattedDate(new Date(newSpot.updatedAt), true),
     }
