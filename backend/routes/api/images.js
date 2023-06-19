@@ -29,7 +29,13 @@ router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });
     } // Authorization
 
-    await SpotImage.destroy();
+    await SpotImage.destroy(
+        {
+        where: {
+          id: imageId
+        }
+      }
+    );
 
     res.json({ message: "Successfully deleted" });
 });
@@ -56,7 +62,13 @@ router.delete('/review-images/:imageId', requireAuth, async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });
     } // Authorization
 
-    await ReviewImage.destroy();
+    await ReviewImage.destroy(
+      {
+        where: {
+          id: imageId
+        }
+      }
+    );
 
     res.json({ message: "Successfully deleted" });
 });
