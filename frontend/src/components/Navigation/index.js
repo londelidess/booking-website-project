@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import './Navigation.css';
-
+import Greeting from '../Greeting';
 function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
 
@@ -11,6 +11,9 @@ function Navigation({ isLoaded }){
     <ul>
       <li>
         <NavLink exact to="/">Home</NavLink>
+      </li>
+      <li>
+        <Greeting user={sessionUser} /> {/* Render the Greeting component here */}
       </li>
       {isLoaded && (
         <li>
