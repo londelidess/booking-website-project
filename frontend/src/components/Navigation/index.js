@@ -13,7 +13,7 @@ function Navigation({ isLoaded }){
         <NavLink exact to="/">Home</NavLink>
       </li>
       <li>
-        <Greeting user={sessionUser} /> {/* Render the Greeting component here */}
+        <Greeting user={sessionUser} />
       </li>
       {isLoaded && (
         <li>
