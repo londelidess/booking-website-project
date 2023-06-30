@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as sessionActions from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import "./LoginForm.css";
 
 function LoginFormPage() {
   const dispatch = useDispatch();
@@ -24,11 +25,12 @@ function LoginFormPage() {
   };
 
   return (
-    <>
+    <div className="login-form-container">
       <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
+      Username or Email
         <label>
-          Username or Email
+          {/* Username or Email */}
           <input
             type="text"
             value={credential}
@@ -36,8 +38,9 @@ function LoginFormPage() {
             required
           />
         </label>
+        Password
         <label>
-          Password
+        {/* Password */}
           <input
             type="password"
             value={password}
@@ -45,10 +48,10 @@ function LoginFormPage() {
             required
           />
         </label>
-        {errors.credential && <p>{errors.credential}</p>}
+        {errors.credential && <p className="error-message">{errors.credential}</p>}
         <button type="submit">Log In</button>
       </form>
-    </>
+    </div>
   );
 }
 
