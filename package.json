@@ -2,8 +2,8 @@
   "dependencies": {
     "express-validator": "^7.0.1"
   },
-  "name": "api-solobackend-project",
-  "description": "<!--!!START SILENT --> # AirBnB Clone <!--!!END --> <!--!!ADD --> <!-- # `<name of application here>` --> <!--!!END_ADD -->",
+  "name": "booking-website-project",
+  "description": "# AirBnB Clone",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -18,5 +18,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  }
 }
