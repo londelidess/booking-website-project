@@ -10,11 +10,17 @@ import configureStore from './store';
 
 import { createRoot } from 'react-dom/client';///
 
+import { restoreCSRF, csrfFetch } from './store/csrf';
+
 const store = configureStore();
 
 if (process.env.NODE_ENV !== 'production') {
+  restoreCSRF();
+
+  window.csrfFetch = csrfFetch;
   window.store = store;
 }
+
 
 function Root() {
   return (
