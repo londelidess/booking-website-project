@@ -1,8 +1,7 @@
-import React,{ useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import LoginFormPage from "./components/LoginFormPage";
-
-import { useDispatch } from "react-redux";
 import * as sessionActions from "./store/session";
 
 function App() {
@@ -11,7 +10,7 @@ function App() {
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);
-  
+
   return (
     isLoaded && (
       <Switch>
