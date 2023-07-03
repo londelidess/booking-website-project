@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';///
+// import { createRoot } from 'react-dom/client';///
 import React from "react";
 
 import "./index.css";
 
-// import ReactDOM from "react-dom";
+import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { ModalProvider, Modal } from "./context/Modal";
@@ -39,16 +39,16 @@ function Root() {
   );
 }
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <Root />
-//   </React.StrictMode>,
-//   document.getElementById("root")
-// );
-
-const root = createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.render(
   <React.StrictMode>
     <Root />
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
+
+// const root = createRoot(document.getElementById('root'));
+// root.render(
+//   <React.StrictMode>
+//     <Root />
+//   </React.StrictMode>
+// );///this breaks drop down

@@ -35,6 +35,7 @@
 //   }
 
 //   return (
+//     <nav>
 //     <ul>
 //       <li>
 //         <NavLink exact to="/">
@@ -45,6 +46,7 @@
 //       <li><SearchBar /></li>
 //       {isLoaded && sessionLinks}
 //     </ul>
+//      </nav>
 //   );
 // }
 
@@ -52,6 +54,7 @@
 //supposed to work as phase 4
 
 // frontend/src/components/Navigation/index.js
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -59,23 +62,29 @@ import ProfileButton from './ProfileButton';
 import './Navigation.css';
 import SearchBar from './SearchBar';
 import Greeting from './Greeting';
+import logo from '../../images/logo.jpg';
 
 function Navigation({ isLoaded }) {
     const sessionUser = useSelector(state => state.session.user);
     return (
-        <ul>
-
-            <li>
-                <NavLink exact to="/">Home</NavLink>
-            </li>
-             <Greeting user={sessionUser} />
-            <SearchBar />
-            {isLoaded && (
-                <li>
-                    <ProfileButton user={sessionUser} />
-                </li>
-            )}
-        </ul>
+      <nav>
+      <ul>
+        <li>
+          <NavLink exact to="/"><img src={logo} alt = 'home' /></NavLink>
+        </li>
+        <li>
+          <Greeting user={sessionUser} />
+        </li>
+        <li>
+          <SearchBar />
+        </li>
+        {isLoaded && (
+          <li>
+            <ProfileButton user={sessionUser} />
+          </li>
+        )}
+      </ul>
+    </nav>
     );
 }
 export default Navigation;
