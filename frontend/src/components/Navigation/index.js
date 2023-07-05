@@ -79,9 +79,15 @@ function Navigation({ isLoaded }) {
           <SearchBar />
         </li>
         {isLoaded && (
+            <React.Fragment>
+          <li>
+          <NavLink to="/spots/new">Create a New Spot</NavLink>
+        </li>
           <li>
             <ProfileButton user={sessionUser} />
           </li>
+          </React.Fragment>
+          //  i need react,fragment to return more than 2 line same as <></>
         )}
       </ul>
     </nav>

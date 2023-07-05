@@ -1,28 +1,22 @@
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { deleteSpot } from "../../store/spots";
+
 
 const SpotIndexItem = ({ spot }) => {
-    const dispatch = useDispatch();
+  const avgRating = spot.avgRating === 0 ? 'New' : spot.avgRating.toFixed(2);
 
-    const handleDelete = (e) => {
-      e.preventDefault();
-      dispatch(deleteSpot(spot.id));
-    };
-
-    return (
-      <li>
-        <div className="li-contents-flex">
-          <Link to={`/spots/${spot.id}`}>Spot #{spot.id}</Link>
-          <div className="buttons-container">
-            <Link className="edit-link" to={`/spots/${spot.id}/edit`}>
-              Edit
-            </Link>
-            <button onClick={handleDelete}>Delete</button>
+  return (
+    <li title={spot.name}>
+      <Link to={`/spots/${spot.id}`}>
+        <div className="spot-item">
+          <div className="spot-details">
+            <img src={spot.previewImage} alt={spot.name} className="spot-thumbnail"/>
+            <div className="spot-info">{spot.city}, {spot.state} <i className="fa-solid fa-star" style={{marginLeft: '10px'}}></i>{avgRating}</div>
+            <div>${spot.price} night</div>
           </div>
         </div>
-      </li>
-    );
-  };
+      </Link>
+    </li>
+  );
+};
 
-  export default SpotIndexItem;
+export default SpotIndexItem;

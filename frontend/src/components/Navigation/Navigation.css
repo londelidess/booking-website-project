@@ -1,7 +1,7 @@
 .hidden {
     display: none;
   }
-
+/*
   nav {
     display: flex;
     justify-content: space-around;
@@ -28,4 +28,4 @@
 
   nav ul li a.active {
     color: rgb(15, 15, 14);
-  }
+  } */

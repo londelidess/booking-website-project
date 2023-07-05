@@ -1,9 +1,8 @@
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSpots } from '../../store/spots';
 import SpotIndexItem from './SpotIndexItem';
-// import loadingImage from './loading.gif'; //
 
 const SpotIndex = () => {
   const spots = Object.values(
@@ -18,7 +17,7 @@ const SpotIndex = () => {
 
   return (
     <section>
-      <ul>
+      <ul className="spot-grid">
         {spots.map((spot) => (
           <SpotIndexItem
             spot={spot}
@@ -26,12 +25,6 @@ const SpotIndex = () => {
           />
         ))}
       </ul>
-      <Link
-        className="back-button new"
-        to="/spots/new"
-      >
-        New Spot
-      </Link>
 
     </section>
   );

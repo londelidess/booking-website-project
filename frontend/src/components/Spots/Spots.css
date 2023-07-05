@@ -1,0 +1,26 @@
+.spot-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .spot-item {
+    /* border: 1px solid #ccc; */
+    /* border-radius: 8px; */
+    padding: 1rem;
+    margin: 20px 10px 5px;
+  }
+  .spot-info {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .section {
+    border-bottom: 5px solid #000000;
+    /* margin-bottom: 20px;
+    padding-bottom: 20px; */
+  }
