@@ -88,11 +88,10 @@ function ProfileButton({ user }) {
   const ulRef = useRef();
 
   const openMenu = () => {
-
     if (showMenu) return;
-    console.log('Opening Menu');
+    // console.log('Opening Menu');
     setShowMenu(true);
-    console.log(showMenu);  // This should log 'true' but 'false'!!!!!!
+    // console.log(showMenu);  // This should log 'true' but 'false'!!!!!!
   };
 
   useEffect(() => {
@@ -121,41 +120,45 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button
-        onClick={() => {
-          console.log("Button clicked");///this does happen !!!!!!
-          openMenu();
-        }}
-      >
-        <i className="fas fa-user-circle" />
-      </button>
-      <ul className={ulClassName} ref={ulRef}>
-        {user ? (
-          <>
-            <li>Hello, {user.username}</li>
-            <li>
-              {user.firstName} {user.lastName}
-            </li>
-            <li>{user.email}</li>
-            <li>
-              <button onClick={logout}>Log Out</button>
-            </li>
-          </>
-        ) : (
-          <>
-            <OpenModalMenuItem
-              itemText="Sign Up"
-              onItemClick={closeMenu}
-              modalComponent={<SignupFormModal />}
-            />
-            <OpenModalMenuItem
-              itemText="Log In"
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
-            />
-          </>
-        )}
-      </ul>
+      <div className="profile-container">
+        <button
+          className="prof"
+          onClick={() => {
+            // console.log("Button clicked");
+            openMenu();
+          }}
+        >
+          <i className="fa-solid fa-bars" />
+          <i className="fas fa-user-circle" />
+        </button>
+        <ul className={ulClassName} ref={ulRef}>
+          {user ? (
+            <>
+              <li>Hello, {user.username}</li>
+              <li>
+                {user.firstName} {user.lastName}
+              </li>
+              <li>{user.email}</li>
+              <li>
+                <button onClick={logout}>Log Out</button>
+              </li>
+            </>
+          ) : (
+            <>
+              <OpenModalMenuItem
+                itemText="Sign Up"
+                onItemClick={closeMenu}
+                modalComponent={<SignupFormModal />}
+              />
+              <OpenModalMenuItem
+                itemText="Log In"
+                onItemClick={closeMenu}
+                modalComponent={<LoginFormModal />}
+              />
+            </>
+          )}
+        </ul>
+      </div>
     </>
   );
 }

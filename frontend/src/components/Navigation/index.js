@@ -62,18 +62,18 @@ import ProfileButton from './ProfileButton';
 import './Navigation.css';
 import SearchBar from './SearchBar';
 import Greeting from './Greeting';
-import logo from '../../images/logo.jpg';
+import logo from '../../images/logo.png';
 
 function Navigation({ isLoaded }) {
     const sessionUser = useSelector(state => state.session.user);
     return (
       <nav>
-      <ul>
+      <ul className='header'>
         <li>
-          <NavLink exact to="/"><img src={logo} alt = 'home' /></NavLink>
+          <NavLink exact to="/"><img className='logo' src={logo} alt = 'home' /></NavLink>
         </li>
         <li>
-          <Greeting user={sessionUser} />
+          {/* <Greeting user={sessionUser} /> */}
         </li>
         <li>
           <SearchBar />
@@ -81,10 +81,10 @@ function Navigation({ isLoaded }) {
         {isLoaded && (
             <React.Fragment>
           <li>
-          <NavLink to="/spots/new">Create a New Spot</NavLink>
-        </li>
-          <li>
-            <ProfileButton user={sessionUser} />
+            <div className='nav-item-group'>
+              <NavLink to="/spots/new">Create a New Spot</NavLink>
+              <ProfileButton user={sessionUser} />
+            </div>
           </li>
           </React.Fragment>
           //  i need react,fragment to return more than 2 line same as <></>

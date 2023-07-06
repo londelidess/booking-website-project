@@ -3,12 +3,13 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSpots } from '../../store/spots';
 import SpotIndexItem from './SpotIndexItem';
+import './Spots.css'//needed and affects to the SpotIndexItem
 
 const SpotIndex = () => {
   const spots = Object.values(
     useSelector((state) => (state.spots ? state.spots : []))
   );
-
+// console.log('SpotIndex----',spots)
   const dispatch = useDispatch();
 
   useEffect(() => {
