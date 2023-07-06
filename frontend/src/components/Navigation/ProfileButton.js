@@ -77,6 +77,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom";
 import * as sessionActions from "../../store/session";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
@@ -139,6 +140,9 @@ function ProfileButton({ user }) {
                 {user.firstName} {user.lastName}
               </li>
               <li>{user.email}</li>
+              <NavLink to="/spots/new" style={{ cursor: "pointer" }}>
+                    Create a New Spot
+                  </NavLink>
               <li>
                 <button onClick={logout}>Log Out</button>
               </li>

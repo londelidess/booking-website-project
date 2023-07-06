@@ -42,7 +42,7 @@ const SpotShow = () => {
     <>
       <h1>{spot.name}</h1>
       <h2>
-        Location: {spot.city}, {spot.state}, {spot.country}
+       {spot.city}, {spot.state}, {spot.country}
       </h2>
 
       <div className="parent">
