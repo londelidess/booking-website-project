@@ -12,7 +12,7 @@ module.exports = {
     options.tableName = 'SpotImages';
     await queryInterface.bulkInsert(options, [{
       spotId: 1,
-      url: "image url",
+      url: "https://en.wikipedia.org/wiki/House#/media/File:8A,_Bulevardul_Aviatorilor_,_Bucharest_(Romania).jpg",
       preview: true,
     }], {});
 
