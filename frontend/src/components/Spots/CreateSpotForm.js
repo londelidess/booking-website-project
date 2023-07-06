@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createSpot, addImageToSpot } from "../../store/spots";
 import { useHistory } from "react-router-dom";
@@ -12,10 +12,10 @@ const CreateSpotForm = () => {
     city: "",
     state: "",
     country: "",
-    lat: "",
-    lng: "",
+    lat: '',
+    lng: '',
     name: "",
-    price: 0,
+    price: "",
     description: "",
     previewImage: "",
     previewImage1: "",
@@ -28,7 +28,9 @@ const CreateSpotForm = () => {
 
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+  // useEffect(() => {
+const getErrors = () =>{//changed to function cuz I don't want to see errors until after handleEvent
+
     const newErrors = {};
 
     if (!values.address) {
@@ -45,6 +47,12 @@ const CreateSpotForm = () => {
 
     if (!values.country) {
       newErrors.country = "Country is required";
+    }
+    if (!values.lat) {
+      newErrors.lat = "Latitude is required";
+    }
+    if (!values.lng) {
+      newErrors.lng = "Longitude is required";
     }
 
     if (!values.name) {
@@ -111,17 +119,27 @@ const CreateSpotForm = () => {
       newErrors.previewImage4 = "Image URL must end in .png, .jpg, or .jpeg";
     }
 
-    setErrors(newErrors);
-  }, [values]);
+  //   setErrors(newErrors);
+  // }, [values]);
+  // changed to return newError
+  return newErrors
+}
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const val = type === "checkbox" ? checked : value;
-    setValues((prevValues) => ({ ...prevValues, [name]: val }));
+    const { name, value } = e.target;
+    setValues((prevValues) => ({ ...prevValues, [name]: value }));
   };
+  //taking the previous values, spreading them to create a new object,
+  //and then overriding the value of the input field that changed.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const newErrors = getErrors();///added
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     if (Object.keys(errors).length === 0) {
       const {
@@ -134,9 +152,10 @@ const CreateSpotForm = () => {
         name,
         price,
         description,
-        previewImage,
+        // previewImage,
         isPreview,
       } = values;
+
       const spot = {
         address,
         city,
@@ -148,16 +167,31 @@ const CreateSpotForm = () => {
         description,
         price,
       };
-      const imageUrl = previewImage;
 
       const newSpot = await dispatch(createSpot(spot));
-
+console.log(newSpot)
       if (newSpot && newSpot.errors) {
         setErrors(newSpot.errors);
       } else if (newSpot) {
-        await dispatch(addImageToSpot(newSpot.id, imageUrl, isPreview)); // dispatch addImageToSpot here
+
+        const imageUrls = [
+          values.previewImage,
+          values.previewImage1,
+          values.previewImage2,
+          values.previewImage3,
+          values.previewImage4,
+        ];
+
+        const imagePromises = imageUrls.map((imageUrl) => dispatch(addImageToSpot(newSpot.id, imageUrl, isPreview))
+        );
+
+        await Promise.all(imagePromises);
+
         history.push(`/spots/${newSpot.id}`);
       }
+
+    } else {//added else statement
+      setErrors(newErrors);
     }
   };
 
@@ -191,7 +225,7 @@ const CreateSpotForm = () => {
               placeholder="City"
             />
           </div>
-          <p>,</p>
+          <span className="comma">,</span>
           <div style={{ flex: 0.3 }}>
             <label htmlFor="state">State</label>
             {errors.state && <span className="error">{errors.state}</span>}
@@ -213,9 +247,10 @@ const CreateSpotForm = () => {
               value={values.lat}
               onChange={handleInputChange}
               placeholder="Latitude"
+              // disabled
             />
           </div>
-          <p>,</p>
+          <span className="comma">,</span>
           <div style={{ flex: 0.5 }}>
             <label htmlFor="lng">Longitude</label>
             {errors.lng && <span className="error">{errors.lng}</span>}
@@ -224,9 +259,28 @@ const CreateSpotForm = () => {
               value={values.lng}
               onChange={handleInputChange}
               placeholder="Longitude"
+              // disabled
             />
           </div>
         </div>
+      </div>
+
+      <div className="section">
+        <h2>Describe your place to guests</h2>
+        <p>
+          Mention the best features of your space, any special amenities like
+          fast wifi or parking, and what you love about the neighborhood.
+        </p>
+
+        <textarea
+          name="description"
+          value={values.description}
+          onChange={handleInputChange}
+          placeholder="Please write at least 30 characters"
+          rows="10"
+          cols="60"
+        />
+        {errors.description && <p className="error">{errors.description}</p>}
       </div>
 
       <div className="section">
@@ -261,21 +315,7 @@ const CreateSpotForm = () => {
         </div>
         {errors.price && <p className="error">{errors.price}</p>}
       </div>
-      <div className="section">
-        <h2>Describe your place to guests</h2>
-        <p>
-          Mention the best features of your space, any special amenities like
-          fast wifi or parking, and what you love about the neighborhood.
-        </p>
 
-        <textarea
-          name="description"
-          value={values.description}
-          onChange={handleInputChange}
-          placeholder="Describe your place to guests"
-        />
-        {errors.description && <p className="error">{errors.description}</p>}
-      </div>
       <div className="section">
         <h2>Liven up your spot with photos</h2>
         <p>Submit a link to at least one photo to publish your spot.</p>

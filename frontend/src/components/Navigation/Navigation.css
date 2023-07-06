@@ -55,6 +55,7 @@
 .profile-container{
   position: relative;
   display: inline-block;
+
 }
 
 .profile-dropdown{
@@ -73,46 +74,3 @@
   gap: 1em;
   align-items: center;
 }
-/*
-.header {
-  height: 80px;
-	padding: 0 24px;
-	display: flex;
-	align-items: center;
-	box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 12px;
-	justify-content: space-between;
-	position: fixed;
-	width: 100%;
-}
-  .logo {
-    width: 32px;
-    height: 32px;
-  } */
-/*
-  nav {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-    background-color: white;
-    border-bottom: 2px solid rgb(186, 184, 184);
-  }
-
-  nav ul {
-    list-style-type: none;
-    display: flex;
-    gap: 15px;
-    list-style-type: none;
-  }
-
-  nav ul li {
-    margin-right: 10px;
-  }
-
-  nav ul li a {
-    color: white;
-    text-decoration: none;
-  }
-
-  nav ul li a.active {
-    color: rgb(15, 15, 14);
-  } */

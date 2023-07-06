@@ -38,7 +38,7 @@ export const fetchSpots = () => async (dispatch) => {
   const res = await csrfFetch('/api/spots');
 
   if (res.ok) {
-    // const spots = await res.json();array
+    // const spots = await res.json(); this is for array this time is object so see below
     const { Spots: spots } = await res.json();
     dispatch(loadSpots(spots));
   }
@@ -90,7 +90,7 @@ export const createSpot = (spot) => async (dispatch) => {
     console.error('Error detail:', errors);
     return errors;
   }
-};
+};//receiveSpot is in the reducer so to update your state with the new spot.
 
 export const addImageToSpot = (spotId, imageUrl, preview) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${spotId}/images`, {

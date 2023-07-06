@@ -1,46 +1,68 @@
-import {  useParams,  } from 'react-router-dom';
-import { useEffect,  } from 'react';
-
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { fetchDetailedSpot } from '../../store/spots'; // Assume you have this action in your store
-
+import { fetchDetailedSpot } from '../../store/spots';
+import './Spots.css';
 
 const SpotShow = () => {
-    const { spotId } = useParams();
-    const spot = useSelector((state) => state.spots ? state.spots[spotId] : null);
-    console.log(spot)
-    const dispatch = useDispatch();
+  const { spotId } = useParams();
+  const spot = useSelector((state) => state.spots ? state.spots[spotId] : null);
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-      dispatch(fetchDetailedSpot(spotId))
-    }, [dispatch, spotId]);
+  useEffect(() => {
+    dispatch(fetchDetailedSpot(spotId));
+  }, [dispatch, spotId]);
 
-    const handleReserve = () => {
-      alert("Feature coming soon");
-    };
-    const largeImage = spot?.images?.find(image => image.preview) || {};
-    const smallImages = spot?.images?.filter(image => !image.preview) || [];
-    if (!spot) {
-        return <div>Loading...</div>; 
-      }
-    return (
-      <section>
-        <h1>{spot?.name}</h1>
-        <p>Location: {spot?.city}, {spot?.state}, {spot?.country}</p>
-        {/* <img src={spot?.mainImage} alt={spot?.name} className="large-image" /> */}
-        <img src={largeImage.url} alt={spot?.name} className="large-image" />
-        <div className="small-images">
-          {/* {spot?.previewImages?.map((img, i) => <img key={i} src={img} alt={spot?.name} className="small-image"/>)} */}
-          {smallImages.map((img, i) => <img key={i} src={img.url} alt={spot?.name} className="small-image"/>)}
-        </div>
-        <p>Hosted by {spot?.Owner?.firstName}, {spot?.Owner?.lastName}</p>
-        <p>{spot?.description}</p>
-        <div className="callout-box">
-          <p>${spot?.price} per night</p>
-          <button onClick={handleReserve}>Reserve</button>
-        </div>
-      </section>
-    );
+  if (!spot) return null;
+
+  const avgRating = spot.avgRating === 0 ? 'New' : spot?.avgRating?.toFixed(2);
+
+  const renderImages = () => {
+    if (spot?.SpotImages?.length === 0) {
+      // Render placeholder squares when there are no images
+      return (
+        <>
+          <div className="image-placeholder div1"></div>
+          <div className="image-placeholder div2"></div>
+          <div className="image-placeholder div3"></div>
+          <div className="image-placeholder div4"></div>
+          <div className="image-placeholder div5"></div>
+        </>
+      );
+    }
+
+    return spot?.SpotImages?.map((image, index) => (
+      <div className={`image-placeholder div${index + 1}`} key={index}>
+        <img src={image.url} alt={`Image${index + 1}`} />
+      </div>
+    ));
   };
-  export default SpotShow;
+
+  return (
+    <>
+      <h1>{spot.name}</h1>
+      <h2>
+        Location: {spot.city}, {spot.state}, {spot.country}
+      </h2>
+
+      <div className="parent">
+        {renderImages()}
+      </div>
+
+      <p>
+        Hosted by {spot?.Owner?.firstName}, {spot?.Owner?.lastName}
+      </p>
+      <p>{spot.description}</p>
+      <div className="spot-rating">
+        <i className="fa-solid fa-star"></i>
+        {avgRating}
+      </div>
+      <div className="callout-box">
+        <p>{spot.price} night</p>
+        <button onClick={() => alert('Feature coming soon')}>Reserve</button>
+      </div>
+    </>
+  );
+};
+
+export default SpotShow;
