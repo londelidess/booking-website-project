@@ -33,6 +33,9 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
 
     const newErrors = {};
 
+    if (!values.country) {
+      newErrors.country = "Country is required";
+    }
     if (!values.address) {
       newErrors.address = "Address is required";
     }
@@ -45,9 +48,6 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
       newErrors.state = "State is required";
     }
 
-    if (!values.country) {
-      newErrors.country = "Country is required";
-    }
     if (!values.lat) {
       newErrors.lat = "Latitude is required";
     }
@@ -143,15 +143,15 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
 
     if (Object.keys(errors).length === 0) {
       const {
+        country,
         address,
         city,
         state,
-        country,
         lat,
         lng,
+        description,
         name,
         price,
-        description,
         // previewImage,
         isPreview,
       } = values;
@@ -169,11 +169,11 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
       };
 
       const newSpot = await dispatch(createSpot(spot));
-console.log(newSpot)
+console.log('in the newSpot after dispatch createspot',newSpot)
       if (newSpot && newSpot.errors) {
         setErrors(newSpot.errors);
-      } else if (newSpot) {
-
+      } else {
+    console.log('in the else if statement')
         const imageUrls = [
           values.previewImage,
           values.previewImage1,
@@ -190,9 +190,8 @@ console.log(newSpot)
         history.push(`/spots/${newSpot.id}`);
       }
 
-    } else {//added else statement
-      setErrors(newErrors);
     }
+
   };
 
   return (
@@ -204,6 +203,13 @@ console.log(newSpot)
           Guests will only get your exact address once they booked a
           reservation.
         </p>
+        <input
+          name="country"
+          value={values.country}
+          onChange={handleInputChange}
+          placeholder="Country"
+        />
+        {errors.address && <p className="error">{errors.address}</p>}
 
         <label htmlFor="address">Street Address</label>
         <input
