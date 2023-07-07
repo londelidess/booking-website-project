@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { currentUserSpots } from "../../store/spots";
 import { Link, NavLink } from "react-router-dom";
 import UserSpotIndexItem from "./UserSpotIndexItem";
+import "./Spots.css";
 
 const ManageSpots = () => {
   const dispatch = useDispatch();

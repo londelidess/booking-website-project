@@ -18,7 +18,7 @@ function ProfileButton({ user }) {
     if (showMenu) return;
     // console.log('Opening Menu');
     setShowMenu(true);
-    // console.log(showMenu);  // This should log 'true' but 'false'!!!!!!
+    // console.log(showMenu); 
   };
 
   useEffect(() => {
@@ -77,7 +77,7 @@ function ProfileButton({ user }) {
               <OpenModalMenuItem
                 itemText="Sign Up"
                 onItemClick={closeMenu}
-                
+
                 modalComponent={<SignupFormModal />}
               />
               <OpenModalMenuItem
