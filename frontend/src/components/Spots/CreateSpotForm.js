@@ -169,11 +169,11 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
       };
 
       const newSpot = await dispatch(createSpot(spot));
-console.log('in the newSpot after dispatch createspot',newSpot)
+// console.log('in the newSpot after dispatch createspot',newSpot)
       if (newSpot && newSpot.errors) {
         setErrors(newSpot.errors);
       } else {
-    console.log('in the else if statement')
+    // console.log('in the else if statement')
         const imageUrls = [
           values.previewImage,
           values.previewImage1,

@@ -33,13 +33,13 @@ function LoginFormModal() {
         sessionActions.login({ credential, password })
       );
       if (res.errors) {
-        setErrors({ credential: "The provided credentials were invalid" });
+        setErrors(res.errors);
       } else {
         closeModal();
       }
     } catch (err) {
       console.error("Error:", err);
-      setErrors({ credential: "The provided credentials were invalid" });
+      setErrors({  credential: err.message || "The provided credentials were invalid" });
     }
   };
 
@@ -56,7 +56,7 @@ function LoginFormModal() {
     <>
       <h1>Log In</h1>
       <form onSubmit={handleSubmit}>
-        {errors.credential && <p>{errors.credential}</p>}
+        {errors.credential && <p className="error">{errors.credential}</p>}
         <label>
           Username or Email
           <input

@@ -144,6 +144,15 @@ export const updateSpot = (spot) => async (dispatch) => {
   }
 };
 
+export const currentUserSpots = () => async (dispatch) => {
+  const res = await csrfFetch('/api/spots/current');
+
+  if (res.ok) {
+    const { Spots: spots } = await res.json();
+    dispatch(loadSpots(spots));
+  }
+};
+
 const initialState = {}
 
 const spotsReducer = (state = initialState, action) => {

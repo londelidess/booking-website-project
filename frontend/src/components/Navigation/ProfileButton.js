@@ -1,83 +1,8 @@
-// import React, { useState, useEffect, useRef } from "react";
-// import { useDispatch } from 'react-redux';
-// import * as sessionActions from '../../store/session';
-// import OpenModalButton from '../OpenModalButton';
-// import LoginFormModal from '../LoginFormModal';
-// import SignupFormModal from '../SignupFormModal';
 
-// function ProfileButton({ user }) {
-//   const dispatch = useDispatch();
-//   const [showMenu, setShowMenu] = useState(false);
-//   const ulRef = useRef();
-
-//   const openMenu = () => {
-//     if (showMenu) return;
-//     setShowMenu(true);
-//   };
-
-//   useEffect(() => {
-//     if (!showMenu) return;
-
-//     const closeMenu = (e) => {
-//       if (!ulRef.current.contains(e.target)) {
-//         setShowMenu(false);
-//       }
-//     };
-
-//     document.addEventListener('click', closeMenu);
-
-//     return () => document.removeEventListener("click", closeMenu);
-//   }, [showMenu]);
-
-//   const logout = (e) => {
-//     e.preventDefault();
-//     dispatch(sessionActions.logout());
-//   };
-
-//   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-
-//   return (
-//     <>
-//       <button onClick={openMenu}>
-//         <i className="fas fa-user-circle" />
-//       </button>
-//       <ul className={ulClassName} ref={ulRef}>
-//         {user ? (
-//           <>
-//             <li>{user.username}</li>
-//             <li>{user.firstName} {user.lastName}</li>
-//             <li>{user.email}</li>
-//             <li>
-//               <button onClick={logout}>Log Out</button>
-//             </li>
-//           </>
-//         ) : (
-//           <>
-//             <li>
-//               <OpenModalButton
-//                 buttonText="Log In"
-//                 modalComponent={<LoginFormModal />}
-//               />
-//             </li>
-//             <li>
-//               <OpenModalButton
-//                 buttonText="Sign Up"
-//                 modalComponent={<SignupFormModal />}
-//               />
-//             </li>
-//           </>
-//         )}
-//       </ul>
-//     </>
-//   );
-// }
-
-// export default ProfileButton;
-// code works as phase 4
 
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink,useHistory  } from "react-router-dom";
 import * as sessionActions from "../../store/session";
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
@@ -87,6 +12,7 @@ function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
+  const history = useHistory();
 
   const openMenu = () => {
     if (showMenu) return;
@@ -115,6 +41,7 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
+    history.push('/');
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
@@ -135,14 +62,12 @@ function ProfileButton({ user }) {
         <ul className={ulClassName} ref={ulRef}>
           {user ? (
             <>
-              <li>Hello, {user.username}</li>
-              <li>
-                {user.firstName} {user.lastName}
-              </li>
+              <li>Hello, {user.firstName}</li>
+
               <li>{user.email}</li>
-              <NavLink to="/spots/new" style={{ cursor: "pointer" }}>
-                    Create a New Spot
-                  </NavLink>
+              <NavLink to="/spots/current" style={{ cursor: "pointer" }}>
+                Manage Spots
+              </NavLink>
               <li>
                 <button onClick={logout}>Log Out</button>
               </li>
@@ -152,11 +77,13 @@ function ProfileButton({ user }) {
               <OpenModalMenuItem
                 itemText="Sign Up"
                 onItemClick={closeMenu}
+                
                 modalComponent={<SignupFormModal />}
               />
               <OpenModalMenuItem
                 itemText="Log In"
                 onItemClick={closeMenu}
+                style={{ cursor: "pointer" }}
                 modalComponent={<LoginFormModal />}
               />
             </>
