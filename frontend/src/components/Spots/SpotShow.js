@@ -1,13 +1,23 @@
-import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchDetailedSpot } from '../../store/spots';
-import './Spots.css';
+import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { NavLink, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDetailedSpot } from "../../store/spots";
+import "./Spots.css";
+import noImg from "../../images/no-img.jpg";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import PostReviewFormModal from "../Review/PostReviewFormModal";
 
 const SpotShow = () => {
   const { spotId } = useParams();
-  const spot = useSelector((state) => state.spots ? state.spots[spotId] : null);
+  const spot = useSelector((state) =>
+    state.spots ? state.spots[spotId] : null
+  );
   const dispatch = useDispatch();
+  const [showMenu, setShowMenu] = useState(false);
+  const ulRef = useRef();
+  const history = useHistory();
+  // Modal
 
   useEffect(() => {
     dispatch(fetchDetailedSpot(spotId));
@@ -15,51 +25,86 @@ const SpotShow = () => {
 
   if (!spot) return null;
 
-  const avgRating = spot.avgRating === 0 ? 'New' : spot?.avgRating?.toFixed(2);
+  const avgRating =
+    spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
 
   const renderImages = () => {
-    if (spot?.SpotImages?.length === 0) {
-      // Render placeholder squares when there are no images
-      return (
-        <>
-          <div className="image-placeholder div1"></div>
-          <div className="image-placeholder div2"></div>
-          <div className="image-placeholder div3"></div>
-          <div className="image-placeholder div4"></div>
-          <div className="image-placeholder div5"></div>
-        </>
-      );
+    const totalImages = 5;
+    let images = [];
+
+    for (let i = 0; i < totalImages; i++) {
+      if (spot?.SpotImages && spot?.SpotImages[i]) {
+        images.push(
+          <div
+            className={`image-placeholder div${i + 1}`}
+            key={spot.SpotImages[i].id}
+          >
+            <img src={spot.SpotImages[i].url} alt={`preview${i + 1}`} />
+          </div>
+        );
+      } else {
+        images.push(
+          <div
+            className={`image-placeholder div${i + 1}`}
+            key={i + totalImages}
+          >
+            <img src={noImg} alt="No images" />
+          </div>
+        );
+      }
     }
 
-    return spot?.SpotImages?.map((image, index) => (
-      <div className={`image-placeholder div${index + 1}`} key={index}>
-        <img src={image.url} alt={`Image${index + 1}`} />
-      </div>
-    ));
+    return images;
   };
 
   return (
     <>
-      <h1>{spot.name}</h1>
-      <h2>
-       {spot.city}, {spot.state}, {spot.country}
-      </h2>
+      <div className="detailed-page">
+        <h1>{spot.name}</h1>
+        <h2>
+          {spot.city}, {spot.state}, {spot.country}
+        </h2>
 
-      <div className="parent">
-        {renderImages()}
-      </div>
+        <div className="parent">{renderImages()}</div>
 
-      <p>
-        Hosted by {spot?.Owner?.firstName}, {spot?.Owner?.lastName}
-      </p>
-      <p>{spot.description}</p>
-      <div className="spot-rating">
-        <i className="fa-solid fa-star"></i>
-        {avgRating}
-      </div>
-      <div className="callout-box">
-        <p>{spot.price} night</p>
-        <button onClick={() => alert('Feature coming soon')}>Reserve</button>
+        <div className="content-row">
+          <div className="left-content">
+            <h2>
+              Hosted by {spot?.Owner?.firstName}, {spot?.Owner?.lastName}
+            </h2>
+            <div className="description">
+              <p>{spot.description}</p>
+            </div>
+          </div>
+
+          <div className="reserve-container">
+            <div className="reserve-info">
+              <div>
+                <h2>${spot.price.toFixed(2)}</h2>
+                <p>night</p>
+              </div>
+              <div className="spot-rating">
+                <i className="fa-solid fa-star"></i>
+                {avgRating}
+              </div>
+            </div>
+            <button onClick={() => alert("Feature coming soon")}>
+              Reserve
+            </button>
+          </div>
+        </div>
+
+        <hr />
+        <div className="spot-rating-under-detailed-page">
+          <i className="fa-solid fa-star"></i>
+          {avgRating}
+        </div>
+        <div className="review-button">
+          <OpenModalMenuItem
+            itemText="Post Your Review"
+            modalComponent={<PostReviewFormModal />}
+          />
+        </div>
       </div>
     </>
   );

@@ -16,9 +16,7 @@ function ProfileButton({ user }) {
 
   const openMenu = () => {
     if (showMenu) return;
-    // console.log('Opening Menu');
     setShowMenu(true);
-    // console.log(showMenu); 
   };
 
   useEffect(() => {
@@ -52,7 +50,6 @@ function ProfileButton({ user }) {
         <button
           className="prof"
           onClick={() => {
-            // console.log("Button clicked");
             openMenu();
           }}
         >
@@ -83,7 +80,7 @@ function ProfileButton({ user }) {
               <OpenModalMenuItem
                 itemText="Log In"
                 onItemClick={closeMenu}
-                style={{ cursor: "pointer" }}
+
                 modalComponent={<LoginFormModal />}
               />
             </>
