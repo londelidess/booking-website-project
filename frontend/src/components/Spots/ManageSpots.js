@@ -8,10 +8,9 @@ import "./Spots.css";
 const ManageSpots = () => {
   const dispatch = useDispatch();
   const sessionUser = useSelector(state => state.session.user);
-  const userSpots = Object.values(
-    useSelector((state) => (state.spots ? state.spots : []))
-  );
-  console.log(userSpots);
+  const spotsObj =useSelector((state) => (state.spots.allSpots))
+  const userSpots = Object.values(spotsObj)
+  // console.log(userSpots);
 
   useEffect(() => {
     dispatch(currentUserSpots());

@@ -6,9 +6,8 @@ import SpotIndexItem from "./SpotIndexItem";
 import "./Spots.css"; //needed and affects to the SpotIndexItem
 
 const SpotIndex = () => {
-  const spots = Object.values(
-    useSelector((state) => (state.spots ? state.spots : []))
-  );
+  const spotsObj =useSelector((state) => (state.spots.allSpots))
+  const spots = Object.values(spotsObj)
   // console.log('SpotIndex----',spots)
   const dispatch = useDispatch();
 

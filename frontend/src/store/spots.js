@@ -112,21 +112,6 @@ export const addImageToSpot = (spotId, imageUrl, preview) => async (dispatch) =>
   }
 };
 
-// export const createSpotWithImage = (spot, imageUrl, preview ) => async (dispatch) => {
-//   const newSpot = await dispatch(createSpot(spot));
-// console.log(newSpot)
-//   if (newSpot) {//add an image to it
-//     const newImage = await dispatch(addImageToSpot(newSpot.id, imageUrl, preview));
-
-//     if (!newImage) {
-//       console.error('Failed to add image to spot');
-//     }
-//   } else {
-//     console.error('Failed to create spot');
-//   }
-//   return newSpot;
-// }; this only creates one
-
 export const updateSpot = (spot) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${spot.id}`, {
     method: 'PUT',
@@ -153,38 +138,67 @@ export const currentUserSpots = () => async (dispatch) => {
   }
 };
 
-const initialState = {}
+const initialState = {
+  allSpots: {
+
+  },
+  singleSpot: {
+
+  }
+}
 
 const spotsReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_SPOTS:
-      const spotsState = {};
+      const newLoadedSpots = {...state, allSpots:{}};
       action.spots.forEach((spot) => {
-        spotsState[spot.id] = spot;
+        newLoadedSpots.allSpots[spot.id] = spot;
       });
-      return spotsState;
+      return newLoadedSpots;
     case RECEIVE_SPOT:
-      return { ...state, [action.spot.id]: action.spot };
-    case UPDATE_SPOT:
-      return { ...state, [action.spot.id]: action.spot };
-    case REMOVE_SPOT:
-      const newState = { ...state };
-      delete newState[action.spotId];
-      return newState;
-      case ADD_IMAGE_TO_SPOT: {
-        const { spotId, image } = action.payload;
+      return { ...state, single:action.spot };
+      case UPDATE_SPOT:
         return {
           ...state,
-          [spotId]: {
-            ...state[spotId],
-            images: [...(state[spotId].images || []), image],  // Use [] as default if images doesn't exist
-
+          allSpots: {
+            ...state.allSpots,
+            [action.spot.id]: action.spot,
           },
+          singleSpot: state.singleSpot.id === action.spot.id ? action.spot : state.singleSpot,
         };
-      }
-    default:
-      return state;
-  }
-};
+      case REMOVE_SPOT:
+        const newAllSpots = { ...state.allSpots };
+        delete newAllSpots[action.spotId];
+        return {
+          ...state,
+          allSpots: newAllSpots,
+          singleSpot: state.singleSpot.id === action.spotId ? {} : state.singleSpot,
+        };
+        case ADD_IMAGE_TO_SPOT: {
+          const { spotId, image } = action.payload;
+          if (!state.allSpots[spotId]) {
+            return state;
+          }
+          return {
+            ...state,
+            allSpots: {
+              ...state.allSpots,
+              [spotId]: {
+                ...state.allSpots[spotId],
+                images: [...(state.allSpots[spotId].images || []), image],
+              },
+            },
+            singleSpot: state.singleSpot.id === spotId ?
+            {
+              ...state.singleSpot,
+              images: [...(state.singleSpot.images || []), image],
+            }
+            : state.singleSpot,
+          };
+        }
+      default:
+        return state;
+    }
+  };
 
 export default spotsReducer;

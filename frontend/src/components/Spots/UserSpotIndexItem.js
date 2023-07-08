@@ -1,15 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link ,useHistory } from "react-router-dom";
+import {updateSpot } from '../../store/spots';
+import { useDispatch } from 'react-redux';
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import DeleteSpotFormModal from "./DeleteSpotFormModal"
 
 const UserSpotIndexItem = ({ spot }) => {
+  const dispatch = useDispatch();
+
   const avgRating = spot.avgRating === 0 ? "New" : spot?.avgRating?.toFixed(2);
 
   const handleUpdate = () => {
     // Handle update logic here
   };
 
-  const handleDelete = () => {
-    // Handle delete logic here
-  };
+
   return (
     <>
       <li title={spot.name}>
@@ -35,7 +39,12 @@ const UserSpotIndexItem = ({ spot }) => {
         </Link>
               <li>
                 <button onClick={handleUpdate}>Update</button>
-                <button onClick={handleDelete}>Delete</button>
+                <div className="delete-button">
+            <OpenModalMenuItem
+              itemText="Delete"
+              modalComponent={<DeleteSpotFormModal  />}
+            />
+          </div>
               </li>
       </li>
     </>

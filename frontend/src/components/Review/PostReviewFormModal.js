@@ -3,23 +3,28 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { createReview } from "../../store/review";
 import StarRatingInput from './starRatingInput';
-import "Review.css"
+import "./Review.css"
 
-function PostReviewFormModal() {
+function PostReviewFormModal({spotId} ) {
   const [comment, setComment] = useState("");
   const [stars, setStars] = useState(0);
   const [error, setError] = useState(null);
+  // const { spotId } = useParams(); need to pass prop from SpotShow
 
   const dispatch = useDispatch();
   const { closeModal } = useModal();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("spotId",spotId)
+    const reviewResponse = await dispatch(createReview(spotId, { review: comment, stars }));
 
-    const review = await dispatch(createReview({ comment, stars }));
-
-    if (!review) {
-      setError("Server Error. Please try again later.");
+    // if (reviewResponse.errors) {
+    //   setError(reviewResponse.errors);
+    //   return;
+    // }//my backend is responsing with message
+    if (reviewResponse.message) {
+      setError(reviewResponse.message);
       return;
     }
 

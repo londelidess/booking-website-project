@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDetailedSpot } from "../../store/spots";
+import { fetchReviews } from "../../store/review";
+
 import "./Spots.css";
 import noImg from "../../images/no-img.jpg";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
@@ -10,18 +12,33 @@ import PostReviewFormModal from "../Review/PostReviewFormModal";
 
 const SpotShow = () => {
   const { spotId } = useParams();
-  const spot = useSelector((state) =>
-    state.spots ? state.spots[spotId] : null
-  );
   const dispatch = useDispatch();
-  const [showMenu, setShowMenu] = useState(false);
-  const ulRef = useRef();
-  const history = useHistory();
-  // Modal
+  const spot = useSelector((state) => state.spots.allSpots ? state.spots.allSpots[spotId] : null);
+  const currentUser = useSelector((state) => state.session.user);
+  const reviews = useSelector(state => {
+    if (state.reviews.spot) {
+      return Object.values(state.reviews.spot).filter(review => review.spotId === spotId);
+    }
+    return [];
+  });
 
   useEffect(() => {
     dispatch(fetchDetailedSpot(spotId));
   }, [dispatch, spotId]);
+
+  useEffect(() => {
+    dispatch(fetchReviews(spotId));
+  }, [dispatch, spotId]);
+
+  console.log('currentUser:', currentUser);
+  console.log('reviews:', reviews);
+  console.log('spot:', spot);
+
+  const userHasReview = currentUser && reviews?.find((review) => review.userId === currentUser.id);
+  console.log('userHasReview:', userHasReview);
+
+  const isSpotCreator = currentUser && spot && currentUser.id === spot.ownerId;
+  console.log('isSpotCreator:', isSpotCreator);
 
   if (!spot) return null;
 
@@ -99,13 +116,16 @@ const SpotShow = () => {
           <i className="fa-solid fa-star"></i>
           {avgRating}
         </div>
-        <div className="review-button">
-          <OpenModalMenuItem
-            itemText="Post Your Review"
-            modalComponent={<PostReviewFormModal />}
-          />
-        </div>
+        {currentUser && !userHasReview && !isSpotCreator && (
+          <div className="review-button">
+            <OpenModalMenuItem
+              itemText="Post Your Review"
+              modalComponent={<PostReviewFormModal spotId={spotId} />}
+            />
+          </div>
+        )}
       </div>
+      <div>{!reviews?.length && <p>Be the first to post a review!</p>}</div>
     </>
   );
 };
