@@ -17,12 +17,7 @@ function Navigation({ isLoaded }) {
             <img className="logo" src={logo} alt="home" />
           </NavLink>
         </li>
-        {/* <li>
-          <Greeting user={sessionUser} />
-        </li>
-        <li>
-          <SearchBar />
-        </li> */}
+    
         {isLoaded && (
           <React.Fragment>
             <li>

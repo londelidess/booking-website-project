@@ -18,22 +18,22 @@ function DeleteReviewFormModal({ reviewId }) {
   };
 
   return (
-    <div>
+    <div className="confirm-delete-form">
       <h1>Confirm Delete</h1>
       <p>Are you sure you want to delete this review?</p>
       {sessionUser && (
-        <div className="Yes-No-Button">
-          <button
-            onClick={handleDelete}
-            style={{ backgroundColor: "red", color: "white" }}
-          >
-            Yes (Delete Spot)
-          </button>
-          <button
-            onClick={handleCancel}
-            style={{ backgroundColor: "grey", color: "white" }}
-          >
-            No (Keep Spot)
+      <div className="yes-no-button">
+        <button
+          className="delete"
+          onClick={handleDelete}
+        >
+          Yes (Delete Spot)
+        </button>
+        <button
+          className="cancel-button"
+          onClick={handleCancel}
+        >
+          No (Keep Spot)
           </button>
         </div>
       )}

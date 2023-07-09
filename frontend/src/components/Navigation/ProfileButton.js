@@ -62,11 +62,14 @@ function ProfileButton({ user }) {
               <li>Hello, {user.firstName}</li>
 
               <li>{user.email}</li>
+              <hr />
               <NavLink to="/spots/current" style={{ cursor: "pointer" }}>
                 Manage Spots
               </NavLink>
-              <li>
-                <button onClick={logout}>Log Out</button>
+              <hr />
+
+              <li className="centered-button">
+                <button onClick={logout} className="logout-button">Log Out</button>
               </li>
             </>
           ) : (

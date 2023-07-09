@@ -40,7 +40,7 @@ const UserSpotIndexItem = ({ spot, sessionUser }) => {
                     Update
                   </NavLink>
                 )}
-                <div className="delete-button">
+                <div className="delete-button-for-review">
             <OpenModalMenuItem
               itemText="Delete"
               modalComponent={<DeleteSpotFormModal spotId={spot.id} />}

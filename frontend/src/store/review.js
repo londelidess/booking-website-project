@@ -8,10 +8,11 @@ export const REMOVE_REVIEW = 'review/REMOVE_REVIEW';
 
 export const ADD_IMAGE_TO_REVIEW = 'review/ADD_IMAGE_TO_ADD_IMAGE_TO_REVIEW';
 /**  Action Creators: */
-export const setReviews = (reviews) => {
+export const setReviews = (spotId, reviews) => {
     return {
         type: LOAD_REVIEWS,
-        payload: reviews,
+        spotId,
+        reviews,
     };
 };
 
@@ -43,7 +44,7 @@ export const fetchReviews = (spotId) => async (dispatch) => {
 
     if (res.ok) {
       const { Reviews: reviews } = await res.json();
-      dispatch(setReviews(reviews));
+      dispatch(setReviews(spotId,reviews));
     } else {
       const errors = await res.json();
       return errors;
@@ -95,132 +96,64 @@ export const fetchReviews = (spotId) => async (dispatch) => {
 };
 
 const initialState = {
-  spot: {
-    reviewData: [],
-    optionalOrderedList: [],
-  },
-  user: {
-    reviewData: [],
-    optionalOrderedList: [],
-  },
-};
+    spot: {},
+    user: {},
+  };
+
   const reviewReducer = (state = initialState, action) => {
     switch (action.type) {
       case LOAD_REVIEWS: {
-        console.log('reviews fetched', action.payload);
-        const newSpotReviews = {...state.spot.reviewData};
-        const newUserReviews = {...state.user.reviewData};
+        console.log('reviews fetched', action.reviews);
 
-        for(let review of action.payload){
-          if(review.spotId) newSpotReviews[review.id] = review;
-          if(review.userId) newUserReviews[review.id] = review;
+        const updatedSpotReviews = {};
+
+        for (let review of action.reviews) {
+          updatedSpotReviews[review.id] = review;
         }
 
         return {
           ...state,
-          spot: { // maintains all data in the spot object and only changes the data of the reviewData property
-            ...state.spot,
-            reviewData: newSpotReviews,
-          },
-          user: { // maintains all data in the user object and only changes the data of the reviewData property
-            ...state.user,
-            reviewData: newUserReviews,
-          },
+          spot: updatedSpotReviews,
         };
       }
-      case ADD_REVIEW: {
-        const {  review } = action;
 
-        return {
-          ...state,
-          spot: {
-            ...state.spot,
-            reviewData: {
-              ...state.spot.reviewData,
-              [review.id]: review,
-            },
-          },
-          user: {
-            ...state.user,
-            reviewData: {
-              ...state.user.reviewData,
-              [review.id]: review,
-            },
-          },
-        };
-      }
-      case UPDATE_REVIEW: {
+      case ADD_REVIEW: {
         const { review } = action;
 
         return {
           ...state,
           spot: {
             ...state.spot,
-            reviewData: {
-              ...state.spot.reviewData,
-              [review.id]: review,
-            },
+            [review.id]: review,
           },
           user: {
             ...state.user,
-            reviewData: {
-              ...state.user.reviewData,
-              [review.id]: review,
-            },
+            [review.id]: review,
           },
         };
       }
+
       case REMOVE_REVIEW: {
         const { reviewId } = action;
 
-        const newSpotReviews = { ...state.spot.reviewData };
+        const newSpotReviews = { ...state.spot };
         delete newSpotReviews[reviewId];
 
-        const newUserReviews = { ...state.user.reviewData };
+        const newUserReviews = { ...state.user };
         delete newUserReviews[reviewId];
 
         return {
           ...state,
-          spot: {
-            ...state.spot,
-            reviewData: newSpotReviews,
-          },
-          user: {
-            ...state.user,
-            reviewData: newUserReviews,
-          },
+          spot: newSpotReviews,
+          user: newUserReviews,
         };
       }
-      case ADD_IMAGE_TO_REVIEW: {
-        const { reviewId, image } = action.payload;
 
-        return {
-          ...state,
-          spot: {
-            ...state.spot,
-            reviewData: {
-              ...state.spot.reviewData,
-              [reviewId]: {
-                ...state.spot.reviewData[reviewId],
-                images: [...(state.spot.reviewData[reviewId].images || []), image],
-              },
-            },
-          },
-          user: {
-            ...state.user,
-            reviewData: {
-              ...state.user.reviewData,
-              [reviewId]: {
-                ...state.user.reviewData[reviewId],
-                images: [...(state.user.reviewData[reviewId].images || []), image],
-              },
-            },
-          },
-        };
-      }
       default:
         return state;
     }
   };
+
+
 
   export default reviewReducer;

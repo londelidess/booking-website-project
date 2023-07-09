@@ -15,20 +15,20 @@ const SpotShow = () => {
   const dispatch = useDispatch();
 
   const spot = useSelector((state) => state.spots.single);
-  console.log("spot:", spot);
+  // console.log("spot:", spot);
   const currentUser = useSelector((state) => state.session.user);
-  console.log("currentUser:", currentUser);
-  const reviews = useSelector((state) =>
-    Object.values(state.reviews.spot.reviewData)
-  );
-  console.log("reviews array:", reviews);
+  // console.log("currentUser:", currentUser);
+  const reviewsObj = useSelector((state) => state.reviews.spot);
+  const reviews = Object.values(reviewsObj);
+
+  // console.log("reviewsObj:", reviews);
 
   const userHasReview =
     currentUser && reviews?.find((review) => review.userId === currentUser.id);
-  console.log("userHasReview:", userHasReview);
+  // console.log("userHasReview:", userHasReview);
 
   const isSpotCreator = currentUser && currentUser.id === spot?.ownerId;
-  console.log("isSpotCreator:", isSpotCreator);
+  // console.log("isSpotCreator:", isSpotCreator);
 
   useEffect(() => {
     dispatch(fetchDetailedSpot(spotId));
@@ -38,39 +38,37 @@ const SpotShow = () => {
     dispatch(fetchReviews(spotId));
   }, [dispatch, spotId]);
 
-  if (!spot) return null;
-
   const avgRating =
     spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
 
-    const renderImages = () => {
-      const totalImages = 5;
-      let images = [];
+  const renderImages = () => {
+    const totalImages = 5;
+    let images = [];
 
-      for (let i = 0; i < totalImages; i++) {
-        if (spot?.SpotImages && spot?.SpotImages[i]) {
-          images.push(
-            <div
-              className={`image-placeholder div${i + 1}`}
-              key={spot.SpotImages[i].id}
-            >
-              <img src={spot.SpotImages[i].url} alt={`preview${i + 1}`} />
-            </div>
-          );
-        } else if (images.length < totalImages) {
-          images.push(
-            <div
-              className={`image-placeholder div${i + 1}`}
-              key={i + totalImages}
-            >
-              <img src={noImg} alt="No images" />
-            </div>
-          );
-        }
+    for (let i = 0; i < totalImages; i++) {
+      if (spot?.SpotImages && spot?.SpotImages[i]) {
+        images.push(
+          <div
+            className={`image-placeholder div${i + 1}`}
+            key={spot.SpotImages[i].id}
+          >
+            <img src={spot.SpotImages[i].url} alt={`preview${i + 1}`} />
+          </div>
+        );
+      } else if (images.length < totalImages) {
+        images.push(
+          <div
+            className={`image-placeholder div${i + 1}`}
+            key={i + totalImages}
+          >
+            <img src={noImg} alt="No images" />
+          </div>
+        );
       }
-      return images;
+    }
+    return images;
   };
-  
+  if (!spot) return null;
   return (
     <>
       <div className="detailed-page">
@@ -100,6 +98,13 @@ const SpotShow = () => {
               <div className="spot-rating">
                 <i className="fa-solid fa-star"></i>
                 {avgRating}
+                {reviews && reviews.length > 0 && (
+                  <p className="reviews-count">
+                    {"·  "}
+                    {reviews.length}{" "}
+                    {reviews.length === 1 ? "review" : "reviews"}
+                  </p>
+                )}
               </div>
             </div>
             <button onClick={() => alert("Feature coming soon")}>
@@ -112,35 +117,36 @@ const SpotShow = () => {
         <div className="spot-rating-under-detailed-page">
           <i className="fa-solid fa-star"></i>
           {avgRating}
-          {" - "}
-          {reviews?.length && (
-            <p>
-              {reviews.length} {reviews.length > 1 ? "reviews" : "review"}
+          {reviews && reviews.length > 0 && (
+            <p className="reviews-count">
+              {"· "}
+              {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
             </p>
           )}
         </div>
         <div>
           {currentUser && !userHasReview && !isSpotCreator && (
-            <div className="review-button">
+            <div className='post-your-review'>
               <OpenModalMenuItem
+
                 itemText="Post Your Review"
                 modalComponent={<PostReviewFormModal spotId={spotId} />}
               />
             </div>
           )}
         </div>
+      <div>{!reviews?.length && <h3>Be the first to post a review!</h3>}</div>
       </div>
-      <div>{!reviews?.length && <p>Be the first to post a review!</p>}</div>
       {reviews.length > 0 &&
         reviews.map((review) => {
           return (
-            <ul>
-              <h3>{review?.User.firstName}</h3>
+            <ul key={review.id}>
+              <h3>{review?.User?.firstName}</h3>
               <h3>{review?.updatedAt}</h3>
               <p>{review?.review}</p>
 
-              {review?.User.id === currentUser.id && (
-                <div className="delete-button">
+              {review?.User?.id === currentUser?.id && (
+                <div className="delete-button-for-review"  >
                   <OpenModalMenuItem
                     itemText="Delete"
                     modalComponent={

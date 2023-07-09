@@ -36,11 +36,13 @@
     display: flex;
     align-items: center;
     gap: 10px;
+
   }
   .prof-container{
     display: flex;
     align-items: center;
     gap: 10px;
+
   }
 .prof {
   border-radius: 150px;
@@ -73,4 +75,13 @@
   display: flex;
   gap: 1em;
   align-items: center;
+}
+.centered-button {
+  display: flex;
+  justify-content: center;
+}
+.logout-button {
+  border-radius: 30%;
+  background-color: grey;
+  color:white;
 }
