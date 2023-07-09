@@ -16,7 +16,7 @@ function OpenModalMenuItem({
   };
 
   return (
-    <li onClick={onClick}>{itemText}</li>
+    <li className="Modal-Form" onClick={onClick} style={{ cursor: "pointer" }}>{itemText}</li>
   );
 }
 
