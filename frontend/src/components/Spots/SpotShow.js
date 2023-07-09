@@ -19,9 +19,9 @@ const SpotShow = () => {
   const currentUser = useSelector((state) => state.session.user);
   // console.log("currentUser:", currentUser);
   const reviewsObj = useSelector((state) => state.reviews.spot);
-  const reviews = Object.values(reviewsObj);
+  const reviews = reviewsObj ? Object.values(reviewsObj) : null;
 
-  // console.log("reviewsObj:", reviews);
+  // console.log("reviews:", reviews);
 
   const userHasReview =
     currentUser && reviews?.find((review) => review.userId === currentUser.id);
@@ -30,12 +30,26 @@ const SpotShow = () => {
   const isSpotCreator = currentUser && currentUser.id === spot?.ownerId;
   // console.log("isSpotCreator:", isSpotCreator);
 
-  useEffect(() => {
-    dispatch(fetchDetailedSpot(spotId));
-  }, [dispatch, spotId]);
+  // useEffect(() => {
+  //   dispatch(fetchDetailedSpot(spotId));
+  // }, [dispatch, spotId]);
+
+  // useEffect(() => {
+  //   dispatch(fetchReviews(spotId));
+  // }, [dispatch, spotId]);
 
   useEffect(() => {
-    dispatch(fetchReviews(spotId));
+    const fetchSpotAndReviews = async () => {
+      await dispatch(fetchDetailedSpot(spotId));
+
+      try {
+        await dispatch(fetchReviews(spotId));
+      } catch (err) {
+        console.log("No reviews found");
+      }
+    };
+
+    fetchSpotAndReviews();
   }, [dispatch, spotId]);
 
   const avgRating =

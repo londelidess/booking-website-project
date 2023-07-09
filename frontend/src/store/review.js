@@ -45,6 +45,8 @@ export const fetchReviews = (spotId) => async (dispatch) => {
     if (res.ok) {
       const { Reviews: reviews } = await res.json();
       dispatch(setReviews(spotId,reviews));
+    }  else if (res.status === 404) {
+      dispatch(setReviews(spotId, []));
     } else {
       const errors = await res.json();
       return errors;
