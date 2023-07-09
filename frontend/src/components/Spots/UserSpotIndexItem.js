@@ -1,18 +1,15 @@
-import { Link ,useHistory } from "react-router-dom";
-import {updateSpot } from '../../store/spots';
-import { useDispatch } from 'react-redux';
+import { Link ,NavLink } from "react-router-dom";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteSpotFormModal from "./DeleteSpotFormModal"
 
-const UserSpotIndexItem = ({ spot }) => {
-  const dispatch = useDispatch();
+const UserSpotIndexItem = ({ spot, sessionUser }) => {
+  // const history = useHistory();
 
   const avgRating = spot.avgRating === 0 ? "New" : spot?.avgRating?.toFixed(2);
 
-  const handleUpdate = () => {
-    // Handle update logic here
-  };
-
+  // const handleUpdate = () => {
+  //   history.push(`/spots/${spot.id}/edit`);
+  // };
 
   return (
     <>
@@ -37,12 +34,16 @@ const UserSpotIndexItem = ({ spot }) => {
             </div>
           </div>
         </Link>
-              <li>
-                <button onClick={handleUpdate}>Update</button>
+              <li className="Update-Delete-Buttons">
+              {sessionUser && (
+                  <NavLink to={`/spots/${spot.id}/edit`} style={{ cursor: "pointer" }}>
+                    Update
+                  </NavLink>
+                )}
                 <div className="delete-button">
             <OpenModalMenuItem
               itemText="Delete"
-              modalComponent={<DeleteSpotFormModal  />}
+              modalComponent={<DeleteSpotFormModal spotId={spot.id} />}
             />
           </div>
               </li>

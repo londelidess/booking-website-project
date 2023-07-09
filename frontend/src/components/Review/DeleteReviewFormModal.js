@@ -1,15 +1,15 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useModal } from "../../context/Modal";
-import { deleteSpot } from "../../store/spots";
+import { deleteReview } from "../../store/review";
 
-function DeleteSpotFormModal({ spotId }) {
+function DeleteReviewFormModal({ reviewId }) {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
   const sessionUser = useSelector((state) => state.session.user);
 
   const handleDelete = async () => {
-    await dispatch(deleteSpot(spotId));
+    await dispatch(deleteReview(reviewId));
     closeModal();
   };
 
@@ -20,7 +20,7 @@ function DeleteSpotFormModal({ spotId }) {
   return (
     <div>
       <h1>Confirm Delete</h1>
-      <p>Are you sure you want to remove this spot from the listings?</p>
+      <p>Are you sure you want to delete this review?</p>
       {sessionUser && (
         <div className="Yes-No-Button">
           <button
@@ -41,4 +41,4 @@ function DeleteSpotFormModal({ spotId }) {
   );
 }
 
-export default DeleteSpotFormModal;
+export default DeleteReviewFormModal;

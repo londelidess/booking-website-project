@@ -11,7 +11,7 @@ export const ADD_IMAGE_TO_REVIEW = 'review/ADD_IMAGE_TO_ADD_IMAGE_TO_REVIEW';
 export const setReviews = (reviews) => {
     return {
         type: LOAD_REVIEWS,
-        reviews,
+        payload: reviews,
     };
 };
 
@@ -73,35 +73,56 @@ export const fetchReviews = (spotId) => async (dispatch) => {
       return errors;
     }
   };
-  const initialState = {
-    spot: {
-      reviewData: {},
-      optionalOrderedList: [],
-    },
-    user: {
-      reviewData: {},
-      optionalOrderedList: [],
-    },
-  };
 
+
+  export const deleteReview = (reviewId) => async (dispatch) => {
+      try {
+          const res = await csrfFetch(`/api/reviews/${reviewId}`, {
+              method: 'DELETE',
+            });
+
+      if (!res.ok) {
+          throw res;
+        }
+
+        dispatch(removeReview(reviewId));
+    } catch (error) {
+        console.error('Error:', error);
+        const errors = await error.json();
+        console.error('Error detail:', errors);
+        return errors;
+    }
+};
+
+const initialState = {
+  spot: {
+    reviewData: [],
+    optionalOrderedList: [],
+  },
+  user: {
+    reviewData: [],
+    optionalOrderedList: [],
+  },
+};
   const reviewReducer = (state = initialState, action) => {
     switch (action.type) {
       case LOAD_REVIEWS: {
+        console.log('reviews fetched', action.payload);
         const newSpotReviews = {...state.spot.reviewData};
         const newUserReviews = {...state.user.reviewData};
 
-        for(let review of action.reviews){
+        for(let review of action.payload){
           if(review.spotId) newSpotReviews[review.id] = review;
           if(review.userId) newUserReviews[review.id] = review;
         }
 
         return {
           ...state,
-          spot: {
+          spot: { // maintains all data in the spot object and only changes the data of the reviewData property
             ...state.spot,
             reviewData: newSpotReviews,
           },
-          user: {
+          user: { // maintains all data in the user object and only changes the data of the reviewData property
             ...state.user,
             reviewData: newUserReviews,
           },

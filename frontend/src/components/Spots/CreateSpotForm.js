@@ -125,10 +125,25 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
   return newErrors
 }
 
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setValues((prevValues) => ({ ...prevValues, [name]: value }));
+  // };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setValues((prevValues) => ({ ...prevValues, [name]: value }));
-  };
+    setValues((prevValues) => {
+        if (name === "previewSelection") {
+            return {
+                ...prevValues,
+                [name]: value,
+            };
+        }
+        return { ...prevValues, [name]: value };
+    });
+};
+
+
+
   //taking the previous values, spreading them to create a new object,
   //and then overriding the value of the input field that changed.
 

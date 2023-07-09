@@ -27,7 +27,7 @@ const ManageSpots = () => {
     {userSpots.length === 0 && <Link to="/spots/new">Create a New Spot</Link>}
     <ul className="spot-grid">
       {userSpots.map((spot) => (
-        <UserSpotIndexItem spot={spot} key={spot.id} />
+        <UserSpotIndexItem spot={spot} key={spot.id} sessionUser={sessionUser} />
       ))}
     </ul>
   </section>
