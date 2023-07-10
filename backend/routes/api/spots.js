@@ -198,33 +198,69 @@ router.put('/:spotId', requireAuth, validateCreateSpots, async (req, res) => {
 });
 
     //Add an Image to a Spot based on the Spot's id
+  // router.post('/:spotId/images', requireAuth, async (req, res, next) => {
+  //   const spotId = parseInt(req.params.spotId,10);
+  //   const { url, preview } = req.body;
+  //   const spot = await Spot.findByPk(spotId);
+
+  //   if (!spot) {
+  //     res.status(404).json({ message: "Spot couldn't be found" });
+  //   }
+
+  //   // Authorization Spot must belong to the current user
+  //   if (spot.ownerId !== req.user.id) {
+  //     res.status(403).json({ message: "Forbidden" });
+  //   }
+
+  //   const image = await SpotImage.create({
+  //     spotId,
+  //     url,
+  //     preview,
+  //   });
+
+  //   const response = {
+  //       id: image.id,
+  //       url: image.url,
+  //       preview: image.preview
+  //   }
+
+  //   return res.json(response);
+  // });
+//Add imageURL array
   router.post('/:spotId/images', requireAuth, async (req, res, next) => {
-    const spotId = parseInt(req.params.spotId,10);
-    const { url, preview } = req.body;
+    const spotId = parseInt(req.params.spotId, 10);
+    const imageUrls = req.body.url; // an array of urls
     const spot = await Spot.findByPk(spotId);
 
     if (!spot) {
-      res.status(404).json({ message: "Spot couldn't be found" });
+      return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    // Authorization Spot must belong to the current user
     if (spot.ownerId !== req.user.id) {
-      res.status(403).json({ message: "Forbidden" });
+      return res.status(403).json({ message: "Forbidden" });
     }
 
-    const image = await SpotImage.create({
-      spotId,
-      url,
-      preview,
-    });
+    const createdImages = [];
 
-    const response = {
+    for(let i = 0; i < imageUrls.length; i++) {
+      const url = imageUrls[i];
+      const isPreview = i === 0; // Set the first image as the preview
+      const image = await SpotImage.create({
+        spotId,
+        url,
+        preview: isPreview,
+      });
+
+      const response = {
         id: image.id,
         url: image.url,
-        preview: image.preview
+        preview: image.preview,
+      }
+
+      createdImages.push(response);
     }
 
-    return res.json(response);
+    return res.json(createdImages);
   });
 
 // Get all Reviews by a Spot's id

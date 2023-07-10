@@ -24,7 +24,7 @@ function DeleteReviewFormModal({ reviewId }) {
       {sessionUser && (
       <div className="yes-no-button">
         <button
-          className="delete"
+          className="delete-button"
           onClick={handleDelete}
         >
           Yes (Delete Spot)

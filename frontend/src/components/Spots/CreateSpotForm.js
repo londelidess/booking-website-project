@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { createSpot, addImageToSpot } from "../../store/spots";
 import { useHistory } from "react-router-dom";
@@ -22,14 +22,13 @@ const CreateSpotForm = () => {
     previewImage2: "",
     previewImage3: "",
     previewImage4: "",
-    isPreview: false,
-    previewSelection: "",
+    // isPreview: false,
   });
 
   const [errors, setErrors] = useState({});
 
-  // useEffect(() => {
-  const getErrors = () => {
+  useEffect(() => {
+  // const getErrors = () => {
     //changed to function cuz I don't want to see errors until after handleEvent
 
     const newErrors = {};
@@ -63,8 +62,8 @@ const CreateSpotForm = () => {
     if (!values.price) {
       newErrors.price = "Price is required";
     }
-
-    if (!values.description || values.description.length < 30) {
+    // !values.description ||
+    if ( values.description.length < 30) {
       newErrors.description = "Description needs a minimum of 30 characters";
     }
 
@@ -120,40 +119,34 @@ const CreateSpotForm = () => {
       newErrors.previewImage4 = "Image URL must end in .png, .jpg, or .jpeg";
     }
 
-    //   setErrors(newErrors);
-    // }, [values]);
+      setErrors(newErrors);
+    }, [values]);
     // changed to return newError
-    return newErrors;
-  };
-
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setValues((prevValues) => ({ ...prevValues, [name]: value }));
+    // return newErrors;
   // };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setValues((prevValues) => {
-      if (name === "previewSelection") {
-        return {
-          ...prevValues,
-          [name]: value,
-        };
-      }
-      return { ...prevValues, [name]: value };
-    });
+    setValues((prevValues) => ({ ...prevValues, [name]: value }));
+    // const newErrors = getErrors();
+    // setErrors(newErrors);
+    //resetting errors
   };
-
   //taking the previous values, spreading them to create a new object,
   //and then overriding the value of the input field that changed.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newErrors = getErrors(); ///added
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    // const newErrors = getErrors();
+    // if (Object.keys(newErrors).length > 0) {
+      // setErrors(newErrors);
+      if (Object.keys(errors).length > 0) {
+        return;
+      }
+
+    //   return;
+    // }
 
     if (Object.keys(errors).length === 0) {
       const {
@@ -167,7 +160,7 @@ const CreateSpotForm = () => {
         name,
         price,
         // previewImage,
-        isPreview,
+        // isPreview,
       } = values;
 
       const spot = {
@@ -194,15 +187,17 @@ const CreateSpotForm = () => {
           values.previewImage2,
           values.previewImage3,
           values.previewImage4,
-        ];
+        ].filter(Boolean);//only loop that is not empty URL
 
-        const imagePromises = imageUrls.map((imageUrl) =>
-          dispatch(addImageToSpot(newSpot.id, imageUrl, isPreview))
-        );
 
-        await Promise.all(imagePromises);
+        const newImages = await dispatch(addImageToSpot(newSpot.id, imageUrls));
 
-        history.push(`/spots/${newSpot.id}`);
+        if (newImages && newImages.errors) {
+          setErrors(newImages.errors);
+        } else {
+          setErrors({})
+          history.push(`/spots/${newSpot.id}`);
+        }
       }
     }
   };
@@ -266,7 +261,7 @@ const CreateSpotForm = () => {
               value={values.lat}
               onChange={handleInputChange}
               placeholder="Latitude"
-              // disabled
+
             />
           </div>
           <span className="comma">,</span>
@@ -278,7 +273,7 @@ const CreateSpotForm = () => {
               value={values.lng}
               onChange={handleInputChange}
               placeholder="Longitude"
-              // disabled
+
             />
           </div>
         </div>
@@ -346,88 +341,52 @@ const CreateSpotForm = () => {
           placeholder="Preview Image URL"
         />
         {errors.previewImage && <p className="error">{errors.previewImage}</p>}
-        <label htmlFor="previewImage">Set as Preview</label>
-        <input
-          type="radio"
-          name="previewSelection"
-          value="previewImage"
-          checked={values.previewSelection === "previewImage"}
-          onChange={handleInputChange}
-        />
+
 
         <input
           name="previewImage1"
           value={values.previewImage1}
           onChange={handleInputChange}
-          placeholder="Preview Image URL"
+          placeholder="Image URL"
         />
         {errors.previewImage1 && (
           <p className="error">{errors.previewImage1}</p>
         )}
-        <label htmlFor="previewImage1">Set as Preview</label>
-        <input
-          type="radio"
-          name="previewSelection"
-          value="previewImage1"
-          checked={values.previewSelection === "previewImage1"}
-          onChange={handleInputChange}
-        />
 
         <input
           name="previewImage2"
           value={values.previewImage2}
           onChange={handleInputChange}
-          placeholder="Preview Image URL"
+          placeholder="Image URL"
         />
         {errors.previewImage2 && (
           <p className="error">{errors.previewImage2}</p>
         )}
-        <label htmlFor="previewImage2">Set as Preview</label>
-        <input
-          type="radio"
-          name="previewSelection"
-          value="previewImage2"
-          checked={values.previewSelection === "previewImage2"}
-          onChange={handleInputChange}
-        />
+
 
         <input
           name="previewImage3"
           value={values.previewImage3}
           onChange={handleInputChange}
-          placeholder="Preview Image URL"
+          placeholder="Image URL"
         />
         {errors.previewImage3 && (
           <p className="error">{errors.previewImage3}</p>
         )}
-        <label htmlFor="previewImage3">Set as Preview</label>
-        <input
-          type="radio"
-          name="previewSelection"
-          value="previewImage3"
-          checked={values.previewSelection === "previewImage3"}
-          onChange={handleInputChange}
-        />
+
 
         <input
           name="previewImage4"
           value={values.previewImage4}
           onChange={handleInputChange}
-          placeholder="Preview Image URL"
+          placeholder="Image URL"
         />
         {errors.previewImage4 && (
           <p className="error">{errors.previewImage4}</p>
         )}
-        <label htmlFor="previewImage4">Set as Preview</label>
-        <input
-          type="radio"
-          name="previewSelection"
-          value="previewImage4"
-          checked={values.previewSelection === "previewImage4"}
-          onChange={handleInputChange}
-        />
+
       </div>
-      <button type="submit">Create Spot</button>
+      <button className="Create-Spot" type="submit">Create Spot</button>
     </form>
   );
 };

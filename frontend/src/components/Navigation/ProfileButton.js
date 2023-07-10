@@ -46,9 +46,10 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <div className="profile-container">
+      <div className="profile-container" >
         <button
           className="prof"
+          style={{ cursor: "pointer" }}
           onClick={() => {
             openMenu();
           }}
