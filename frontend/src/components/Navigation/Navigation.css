@@ -85,3 +85,9 @@
   background-color: grey;
   color:white;
 }
+
+
+/* every modal */
+#modal-content{
+  border-radius: 4%;
+}

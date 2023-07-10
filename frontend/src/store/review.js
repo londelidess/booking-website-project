@@ -97,25 +97,21 @@ export const fetchReviews = (spotId) => async (dispatch) => {
     }
 };
 
-const initialState = {
-    spot: {},
-    user: {},
+  const initialState = {
+    spot: [],
+    user: [],
   };
-
   const reviewReducer = (state = initialState, action) => {
     switch (action.type) {
       case LOAD_REVIEWS: {
         console.log('reviews fetched', action.reviews);
-
-        const updatedSpotReviews = {};
-
-        for (let review of action.reviews) {
-          updatedSpotReviews[review.id] = review;
-        }
-
+        const sortedReviews = [...action.reviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        sortedReviews.forEach(review => {
+          console.log('User data in review:', review.User);
+        });
         return {
           ...state,
-          spot: updatedSpotReviews,
+          spot: sortedReviews,
         };
       }
 
@@ -124,30 +120,19 @@ const initialState = {
 
         return {
           ...state,
-          spot: {
-            ...state.spot,
-            [review.id]: review,
-          },
-          user: {
-            ...state.user,
-            [review.id]: review,
-          },
+          spot: [review, ...state.spot],
         };
       }
 
       case REMOVE_REVIEW: {
         const { reviewId } = action;
 
-        const newSpotReviews = { ...state.spot };
-        delete newSpotReviews[reviewId];
-
-        const newUserReviews = { ...state.user };
-        delete newUserReviews[reviewId];
+        // Filter out the review with the given reviewId
+        const newSpotReviews = state.spot.filter(review => review.id !== reviewId);
 
         return {
           ...state,
           spot: newSpotReviews,
-          user: newUserReviews,
         };
       }
 
@@ -156,6 +141,62 @@ const initialState = {
     }
   };
 
-
-
   export default reviewReducer;
+
+// const initialState = {
+//   spot: {},
+//   user: {},
+// };
+  // const reviewReducer = (state = initialState, action) => {
+  //   switch (action.type) {
+  //     case LOAD_REVIEWS: {
+  //       console.log('reviews fetched', action.reviews);
+
+  //       const updatedSpotReviews = {};
+
+  //       for (let review of action.reviews) {
+  //         updatedSpotReviews[review.id] = review;
+  //       }
+
+  //       return {
+  //         ...state,
+  //         spot: updatedSpotReviews,
+  //       };
+  //     }
+
+  //     case ADD_REVIEW: {
+  //       const { review } = action;
+
+  //       return {
+  //         ...state,
+  //         spot: {
+  //           ...state.spot,
+  //           [review.id]: review,
+  //         },
+  //         user: {
+  //           ...state.user,
+  //           [review.id]: review,
+  //         },
+  //       };
+  //     }
+
+  //     case REMOVE_REVIEW: {
+  //       const { reviewId } = action;
+
+  //       const newSpotReviews = { ...state.spot };
+  //       delete newSpotReviews[reviewId];
+
+  //       const newUserReviews = { ...state.user };
+  //       delete newUserReviews[reviewId];
+
+  //       return {
+  //         ...state,
+  //         spot: newSpotReviews,
+  //         user: newUserReviews,
+  //       };
+  //     }
+
+  //     default:
+  //       return state;
+  //   }
+  // };

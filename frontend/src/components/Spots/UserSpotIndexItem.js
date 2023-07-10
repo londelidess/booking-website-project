@@ -1,7 +1,6 @@
-import { Link ,NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
-import DeleteSpotFormModal from "./DeleteSpotFormModal"
-
+import DeleteSpotFormModal from "./DeleteSpotFormModal";
 const UserSpotIndexItem = ({ spot, sessionUser }) => {
   // const history = useHistory();
 
@@ -13,7 +12,7 @@ const UserSpotIndexItem = ({ spot, sessionUser }) => {
 
   return (
     <>
-      <li title={spot.name}>
+      <li title={spot.name} className="outer-container-Update-Delete-Buttons">
         <Link to={`/spots/${spot.id}`}>
           <div className="spot-item">
             <div
@@ -30,26 +29,41 @@ const UserSpotIndexItem = ({ spot, sessionUser }) => {
                   {avgRating}
                 </div>
               </div>
-              <div>${spot.price} night</div>
+              <p style={{ fontWeight: 'bold' }}>${spot.price.toFixed(2)} night</p>
             </div>
           </div>
         </Link>
-              <li className="Update-Delete-Buttons">
-              {sessionUser && (
-                  <NavLink to={`/spots/${spot.id}/edit`} style={{ cursor: "pointer" }}>
-                    Update
-                  </NavLink>
-                )}
-                <div className="delete-button-for-review">
+        <div className="Update-Delete-Buttons">
+          {sessionUser && (
+            <NavLink
+              to={`/spots/${spot.id}/edit`}
+              style={{
+                marginLeft: "22px",
+                marginTop:"10px",
+                border: "1px solid #000",
+                backgroundColor: "grey",
+                color: "white",
+                padding: "5px",
+                boxShadow: "5px 5px 5px",
+                width: "fit-content",
+                textDecoration: "none",
+                cursor: "pointer"
+              }}
+            >
+              Update
+            </NavLink>
+          )}
+          <div className="delete-button-for-spot">
             <OpenModalMenuItem
               itemText="Delete"
               modalComponent={<DeleteSpotFormModal spotId={spot.id} />}
             />
           </div>
-              </li>
+        </div>
       </li>
     </>
   );
 };
+
 
 export default UserSpotIndexItem;

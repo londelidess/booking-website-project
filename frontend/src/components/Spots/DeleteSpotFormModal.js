@@ -18,27 +18,21 @@ function DeleteSpotFormModal({ spotId }) {
   };
 
   return (
-    <div>
-      <h1>Confirm Delete</h1>
-      <p>Are you sure you want to remove this spot from the listings?</p>
-      {sessionUser && (
-        <div className="Yes-No-Button">
-          <button
-            onClick={handleDelete}
-            style={{ backgroundColor: "red", color: "white" }}
-          >
-            Yes (Delete Spot)
-          </button>
-          <button
-            onClick={handleCancel}
-            style={{ backgroundColor: "grey", color: "white" }}
-          >
-            No (Keep Spot)
-          </button>
+    <div className="delete-spot-confirmation-container">
+    <h1 className="delete-spot-confirmation-title">Confirm Delete</h1>
+    <h2 className="delete-spot-confirmation-text">Are you sure you want to remove this spot from the listings?</h2>
+    {sessionUser && (
+        <div className="delete-spot-confirmation-button-container">
+            <button onClick={handleDelete} className="delete-button">
+                Yes (Delete Spot)
+            </button>
+            <button onClick={handleCancel} className="cancel-button">
+                No (Keep Spot)
+            </button>
         </div>
-      )}
-    </div>
-  );
+    )}
+</div>
+);
 }
 
 export default DeleteSpotFormModal;

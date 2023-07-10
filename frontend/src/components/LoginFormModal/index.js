@@ -47,9 +47,9 @@ function LoginFormModal() {
     e.preventDefault();
     setCredential("JohnSmith");
     setPassword("secret password");
-    await dispatch(sessionActions.login({ credential, password }));
-    await closeModal();
-    // await handleSubmit(e);
+    // await dispatch(sessionActions.login({ credential, password }));
+    // await closeModal();
+    await handleSubmit(e);
   };
 
   return (
@@ -89,7 +89,7 @@ function LoginFormModal() {
         </button>
       </form>
     </div>
- 
+
   );
 }
 
