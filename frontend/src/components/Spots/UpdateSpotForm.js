@@ -1,75 +1,56 @@
-import { useParams } from 'react-router-dom';
-import React, {useState, useEffect, } from "react";
-import { useDispatch,useSelector } from 'react-redux';
+import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { fetchDetailedSpot, updateSpot } from '../../store/spots';
+import { fetchDetailedSpot, updateSpot } from "../../store/spots";
 
 const UpdateSpotForm = () => {
   const dispatch = useDispatch();
   const { spotId } = useParams();
   const history = useHistory();
   const spot = useSelector((state) => state.spots.singleSpot);
-  // useEffect(() => {
-  //   dispatch(fetchDetailedSpot(spotId));
-  // }, [dispatch, spotId]);
 
-  // console.log(spot)
+  const [isLoading, setIsLoading] = useState(true);
+  const [values, setValues] = useState({
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    lat: "",
+    lng: "",
+    name: "",
+    price: "",
+    description: "",
+  });
 
-  // const [values, setValues] = useState({
-  //   address: spot.address,
-  //   city: spot.city,
-  //   state: spot.state,
-  //   country: spot.country,
-  //   lat: spot.lat,
-  //   lng: spot.lng,
-  //   name: spot.name,
-  //   price: spot.price,
-  //   description: spot.description,
-  // });
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchDetailedSpot(spotId));
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [dispatch, spotId]);
 
-const [isLoading, setIsLoading] = useState(true);
-const [values, setValues] = useState({
-  address: '',
-  city: '',
-  state: '',
-  country: '',
-  lat: '',
-  lng: '',
-  name: '',
-  price: '',
-  description: '',
-});
-
-useEffect(() => {
-  const fetchData = async () => {
-    await dispatch(fetchDetailedSpot(spotId));
-    setIsLoading(false);
-  };
-  fetchData();
-}, [dispatch, spotId]);
-
-// Initializing state after data is fetched
-useEffect(() => {
-  if (spot) {
-    setValues({
-      address: spot.address,
-      city: spot.city,
-      state: spot.state,
-      country: spot.country,
-      lat: spot.lat,
-      lng: spot.lng,
-      name: spot.name,
-      price: spot.price,
-      description: spot.description,
-    });
-    setIsLoading(false);
-  }
-}, [spot]);
+  useEffect(() => {
+    if (spot) {
+      setValues({
+        address: spot.address,
+        city: spot.city,
+        state: spot.state,
+        country: spot.country,
+        lat: spot.lat,
+        lng: spot.lng,
+        name: spot.name,
+        price: spot.price,
+        description: spot.description,
+      });
+      setIsLoading(false);
+    }
+  }, [spot]);
 
   const [errors, setErrors] = useState({});
 
-const getErrors = () =>{
-
+  const getErrors = () => {
     const newErrors = {};
 
     if (!values.country) {
@@ -107,34 +88,23 @@ const getErrors = () =>{
     }
 
     //   setErrors(newErrors);
-  // }, [values]);
-  // changed to return newError
-  return newErrors
-}
+    // }, [values]);
+    // changed to return newError
+    return newErrors;
+  };
 
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setValues((prevValues) => ({ ...prevValues, [name]: value }));
-  // };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setValues((prevValues) => {
-        if (name === "previewSelection") {
-            return {
-                ...prevValues,
-                [name]: value,
-            };
-        }
-        return { ...prevValues, [name]: value };
-    });
-};
+    setValues((prevValues) => ({ ...prevValues, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setErrors({}); ///
     const newErrors = getErrors();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      return;
+      return null;
     }
 
     if (Object.keys(errors).length === 0) {
@@ -166,21 +136,17 @@ const getErrors = () =>{
       const newSpot = await dispatch(updateSpot(spot));
       if (newSpot && newSpot.errors) {
         setErrors(newSpot.errors);
-      }else{
-
+      } else {
         history.push(`/spots/${newSpot.id}`);
       }
-
     }
-
   };
-    if (!spotId) return null;
+  if (!spotId) return null;
 
-    if (isLoading) {
-      return <div>Loading...</div>;
-    }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
-
     <form onSubmit={handleSubmit}>
       <div className="section">
         <h1>Update your Spot</h1>
@@ -306,8 +272,9 @@ const getErrors = () =>{
         {errors.price && <p className="error">{errors.price}</p>}
       </div>
 
-
-      <button type="submit" className="Update-Spot">Update Spot</button>
+      <button type="submit" className="Update-Spot">
+        Update Spot
+      </button>
     </form>
   );
 };
