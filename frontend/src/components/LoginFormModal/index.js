@@ -39,17 +39,30 @@ function LoginFormModal() {
       }
     } catch (err) {
       console.error("Error:", err);
-      setErrors({  credential: err.message || "The provided credentials were invalid" });
+      setErrors({
+        credential: err.message || "The provided credentials were invalid",
+      });
     }
   };
 
   const handleDemoLogin = async (e) => {
     e.preventDefault();
-    setCredential("JohnSmith");
-    setPassword("secret password");
-    // await dispatch(sessionActions.login({ credential, password }));
-    // await closeModal();
-    await handleSubmit(e);
+    const demoUser = {
+      credential: "JohnSmith",
+      password: "secret password",
+    };
+
+    const res = await dispatch(sessionActions.login(demoUser));
+    if (!res.errors) {
+      setCredential(demoUser.credential);
+      setPassword(demoUser.password);
+      closeModal();
+    } else {
+      // If there are errors, handle them here.
+      console.error(res.errors);
+      setErrors(res.errors);
+    }
+    // await handleSubmit(e);
   };
 
   return (
@@ -89,7 +102,6 @@ function LoginFormModal() {
         </button>
       </form>
     </div>
-
   );
 }
 
