@@ -8,7 +8,7 @@ const UpdateSpotForm = () => {
   const dispatch = useDispatch();
   const { spotId } = useParams();
   const history = useHistory();
-  const spot = useSelector((state) => state.spots.single);
+  const spot = useSelector((state) => state.spots.singleSpot);
   // useEffect(() => {
   //   dispatch(fetchDetailedSpot(spotId));
   // }, [dispatch, spotId]);
@@ -307,7 +307,7 @@ const getErrors = () =>{
       </div>
 
 
-      <button type="submit">Update Spot</button>
+      <button type="submit" className="Update-Spot">Update Spot</button>
     </form>
   );
 };

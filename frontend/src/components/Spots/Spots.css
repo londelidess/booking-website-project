@@ -309,3 +309,9 @@ margin-top:10px;
   cursor: pointer;
 
 }
+.Update-Spot{
+  background-color: red;
+  color:white;
+  box-shadow: 4px 4px 4px black;
+  cursor: pointer;
+}
