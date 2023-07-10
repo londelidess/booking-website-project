@@ -12,8 +12,8 @@ const CreateSpotForm = () => {
     city: "",
     state: "",
     country: "",
-    lat: '',
-    lng: '',
+    lat: "",
+    lng: "",
     name: "",
     price: "",
     description: "",
@@ -29,7 +29,8 @@ const CreateSpotForm = () => {
   const [errors, setErrors] = useState({});
 
   // useEffect(() => {
-const getErrors = () =>{//changed to function cuz I don't want to see errors until after handleEvent
+  const getErrors = () => {
+    //changed to function cuz I don't want to see errors until after handleEvent
 
     const newErrors = {};
 
@@ -119,11 +120,11 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
       newErrors.previewImage4 = "Image URL must end in .png, .jpg, or .jpeg";
     }
 
-  //   setErrors(newErrors);
-  // }, [values]);
-  // changed to return newError
-  return newErrors
-}
+    //   setErrors(newErrors);
+    // }, [values]);
+    // changed to return newError
+    return newErrors;
+  };
 
   // const handleInputChange = (e) => {
   //   const { name, value } = e.target;
@@ -132,17 +133,15 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setValues((prevValues) => {
-        if (name === "previewSelection") {
-            return {
-                ...prevValues,
-                [name]: value,
-            };
-        }
-        return { ...prevValues, [name]: value };
+      if (name === "previewSelection") {
+        return {
+          ...prevValues,
+          [name]: value,
+        };
+      }
+      return { ...prevValues, [name]: value };
     });
-};
-
-
+  };
 
   //taking the previous values, spreading them to create a new object,
   //and then overriding the value of the input field that changed.
@@ -150,7 +149,7 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newErrors = getErrors();///added
+    const newErrors = getErrors(); ///added
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -184,11 +183,11 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
       };
 
       const newSpot = await dispatch(createSpot(spot));
-// console.log('in the newSpot after dispatch createspot',newSpot)
+      // console.log('in the newSpot after dispatch createSpot',newSpot)
       if (newSpot && newSpot.errors) {
         setErrors(newSpot.errors);
       } else {
-    // console.log('in the else if statement')
+        // console.log('in the else if statement')
         const imageUrls = [
           values.previewImage,
           values.previewImage1,
@@ -197,16 +196,15 @@ const getErrors = () =>{//changed to function cuz I don't want to see errors unt
           values.previewImage4,
         ];
 
-        const imagePromises = imageUrls.map((imageUrl) => dispatch(addImageToSpot(newSpot.id, imageUrl, isPreview))
+        const imagePromises = imageUrls.map((imageUrl) =>
+          dispatch(addImageToSpot(newSpot.id, imageUrl, isPreview))
         );
 
         await Promise.all(imagePromises);
 
         history.push(`/spots/${newSpot.id}`);
       }
-
     }
-
   };
 
   return (

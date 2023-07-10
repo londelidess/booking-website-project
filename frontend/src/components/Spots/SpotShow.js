@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import React, {  useEffect,useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDetailedSpot } from "../../store/spots";
 import { fetchReviews } from "../../store/review";
@@ -13,23 +13,13 @@ const SpotShow = () => {
   const { spotId } = useParams();
   const dispatch = useDispatch();
 
-
   const spot = useSelector((state) => state.spots.single);
-  // console.log("spot:", spot);
   const currentUser = useSelector((state) => state.session.user);
-  // console.log("currentUser:", currentUser);
   const reviews = useSelector((state) => state.reviews.spot);
-
-
-
-  console.log("reviews:", reviews);
-
   const userHasReview =
     currentUser && reviews?.find((review) => review.userId === currentUser.id);
-  // console.log("userHasReview:", userHasReview);
 
   const isSpotCreator = currentUser && currentUser.id === spot?.ownerId;
-  // console.log("isSpotCreator:", isSpotCreator);
 
   useEffect(() => {
     const fetchSpotAndReviews = async () => {
@@ -43,12 +33,18 @@ const SpotShow = () => {
     };
 
     fetchSpotAndReviews();
-  }, [dispatch, spotId]); // Remove `refresh` from here
+  }, [dispatch, spotId]);
 
+  // const avgRating =
+  //   spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
+  let avgRating;
+  if (reviews && reviews.length > 0) {
+    const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
+    avgRating = (totalStars / reviews.length).toFixed(2);
+  } else {
+    avgRating = "New";
+  }//caluculating frontEnd.
 
-
-  const avgRating =
-    spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
 
   const renderImages = () => {
     const totalImages = 5;
@@ -137,16 +133,15 @@ const SpotShow = () => {
         </div>
         <div>
           {currentUser && !userHasReview && !isSpotCreator && (
-            <div className='post-your-review'>
+            <div className="post-your-review">
               <OpenModalMenuItem
-
                 itemText="Post Your Review"
                 modalComponent={<PostReviewFormModal spotId={spotId} />}
               />
             </div>
           )}
         </div>
-      <div>{!reviews?.length && <h3>Be the first to post a review!</h3>}</div>
+        <div>{!reviews?.length && <h3>Be the first to post a review!</h3>}</div>
       </div>
       {reviews.length > 0 &&
         reviews.map((review) => {
@@ -156,8 +151,8 @@ const SpotShow = () => {
               <h3>{review?.updatedAt}</h3>
               <p>{review?.review}</p>
 
-              {review?.userId === currentUser?.id && (///
-                <div className="delete-button-for-review"  >
+              {review?.userId === currentUser?.id && ( ///
+                <div className="delete-button-for-review">
                   <OpenModalMenuItem
                     itemText="Delete"
                     modalComponent={

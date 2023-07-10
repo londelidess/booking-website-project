@@ -9,7 +9,6 @@ function PostReviewFormModal({ spotId }) {
   const [comment, setComment] = useState("");
   const [stars, setStars] = useState(0);
   const [error, setError] = useState(null);
-  // const { spotId } = useParams(); need to pass prop from SpotShow
 
   const dispatch = useDispatch();
   const { closeModal } = useModal();
@@ -20,10 +19,6 @@ function PostReviewFormModal({ spotId }) {
       createReview(spotId, { review: comment, stars })
     );
 
-    // if (reviewResponse.errors) {
-    //   setError(reviewResponse.errors);
-    //   return;
-    // }//my backend is responsing with message
     if (reviewResponse.message) {
       setError(reviewResponse.message);
       return;
@@ -33,6 +28,8 @@ function PostReviewFormModal({ spotId }) {
   };
 
   if (!spotId) return null;
+
+  const isCommentValid = comment.length >= 10;
 
   return (
     <>
@@ -58,9 +55,9 @@ function PostReviewFormModal({ spotId }) {
             </div>
           </div>
           <button
-            className="review-submit-button"
+            className={`review-submit-button ${!isCommentValid || stars === 0 ? "disabled" : ""}`}
             type="submit"
-            disabled={comment.length < 10 || stars === 0}
+            disabled={!isCommentValid || stars === 0}
           >
             Submit Your Review
           </button>
