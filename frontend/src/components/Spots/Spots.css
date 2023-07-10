@@ -38,9 +38,7 @@
   padding-bottom: 20px;
 }
 
-/* a:link {
-    text-decoration: none;
-  } */
+
 form {
   display: flex;
   flex-direction: column;
@@ -298,4 +296,8 @@ margin-top:10px;
 
 .cancel-button:hover {
   background-color: #4d4d4d;
+}
+
+.manage-spots{
+  margin-left: 40px;
 }

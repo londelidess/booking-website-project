@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import React, { useEffect } from "react";
+import React, { useEffect,useState  } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDetailedSpot } from "../../store/spots";
 import { fetchReviews } from "../../store/review";
@@ -12,6 +12,7 @@ import PostReviewFormModal from "../Review/PostReviewFormModal";
 const SpotShow = () => {
   const { spotId } = useParams();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
 
   const spot = useSelector((state) => state.spots.single);
   const currentUser = useSelector((state) => state.session.user);
@@ -23,6 +24,7 @@ const SpotShow = () => {
 
   useEffect(() => {
     const fetchSpotAndReviews = async () => {
+      setIsLoading(true);
       await dispatch(fetchDetailedSpot(spotId));
 
       try {
@@ -30,32 +32,37 @@ const SpotShow = () => {
       } catch (err) {
         console.log("No reviews found");
       }
+      setIsLoading(false);
     };
 
     fetchSpotAndReviews();
   }, [dispatch, spotId]);
 
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
   // const avgRating =
   //   spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
+  //I couldn't do this ...
   let avgRating;
   if (reviews && reviews.length > 0) {
     const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
     avgRating = (totalStars / reviews.length).toFixed(2);
   } else {
     avgRating = "New";
-  }//caluculating frontEnd.
-
+  } //caluculating frontEnd.
 
   const renderImages = () => {
     const totalImages = 5;
     let images = [];
-
+//key has to be unique
     for (let i = 0; i < totalImages; i++) {
       if (spot?.SpotImages && spot?.SpotImages[i]) {
         images.push(
           <div
             className={`image-placeholder div${i + 1}`}
-            key={spot.SpotImages[i].id}
+            key={`image-${spot.SpotImages[i].id}`}///
           >
             <img src={spot.SpotImages[i].url} alt={`preview${i + 1}`} />
           </div>
@@ -64,7 +71,7 @@ const SpotShow = () => {
         images.push(
           <div
             className={`image-placeholder div${i + 1}`}
-            key={i + totalImages}
+            key={`placeholder-${i + totalImages}`}///
           >
             <img src={noImg} alt="No images" />
           </div>

@@ -23,7 +23,6 @@ function PostReviewFormModal({ spotId }) {
       setError(reviewResponse.message);
       return;
     }
-
     closeModal();
   };
 
@@ -55,7 +54,9 @@ function PostReviewFormModal({ spotId }) {
             </div>
           </div>
           <button
-            className={`review-submit-button ${!isCommentValid || stars === 0 ? "disabled" : ""}`}
+            className={`review-submit-button ${
+              !isCommentValid || stars === 0 ? "disabled" : ""
+            }`}
             type="submit"
             disabled={!isCommentValid || stars === 0}
           >
