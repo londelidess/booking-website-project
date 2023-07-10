@@ -39,7 +39,7 @@ const SpotShow = () => {
   }, [dispatch, spotId]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <div className="centered">Loading...</div>;
   }
 
   // const avgRating =
