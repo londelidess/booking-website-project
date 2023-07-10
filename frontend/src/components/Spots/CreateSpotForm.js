@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useDispatch } from "react-redux";
 import { createSpot, addImageToSpot } from "../../store/spots";
 import { useHistory } from "react-router-dom";
@@ -131,8 +131,6 @@ const CreateSpotForm = () => {
   };
   //taking the previous values, spreading them to create a new object,
   //and then overriding the value of the input field that changed.
-
-  // this fix the issues of has to double click after error but this way has to show error before submit
 
   const handleSubmit = async (e) => {
     e.preventDefault();
