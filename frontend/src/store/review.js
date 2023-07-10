@@ -97,6 +97,20 @@ export const fetchReviews = (spotId) => async (dispatch) => {
     }
 };
 
+
+// in your spots reducer, when CREATE_SPOT_IMAGE is dispatched, dispatch it with the spotId in the payload. That way you can do something along the lines of
+// case actionTypes.CREATE_SPOT_IMAGES: {
+//       const newState = { ...state };
+//       const { id, preview } = action.payload;
+//       newState.allSpots = { ...newState.allSpots };
+//       newState.allSpots[id] = { ...newState.allSpots[id], preview };
+//       newState.orderedSpots = [...newState.orderedSpots];
+//       const spotIdx = newState.orderedSpots.findIndex((spot) => spot.id == id);
+//       if (spotIdx > -1) {
+//         newState.orderedSpots[spotIdx].preview = preview;
+//       }
+//       return newState;
+
 const initialState = {
     spot: {},
     user: {},

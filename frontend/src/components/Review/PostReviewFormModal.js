@@ -36,8 +36,8 @@ function PostReviewFormModal({ spotId }) {
 
   return (
     <>
-       <div className="review-form">
-      <h1 className="form-heading">How was your stay?</h1>
+      <div className="review-form">
+        <h1>How was your stay?</h1>
         {error && <p className="error"> {error}</p>}
         <form onSubmit={handleSubmit}>
           <textarea
@@ -57,7 +57,11 @@ function PostReviewFormModal({ spotId }) {
               <h3>Stars</h3>
             </div>
           </div>
-          <button type="submit" disabled={comment.length < 10 || stars === 0}>
+          <button
+            className="review-submit-button"
+            type="submit"
+            disabled={comment.length < 10 || stars === 0}
+          >
             Submit Your Review
           </button>
         </form>

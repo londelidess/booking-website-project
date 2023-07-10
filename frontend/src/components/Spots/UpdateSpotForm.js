@@ -40,7 +40,6 @@ const [values, setValues] = useState({
   description: '',
 });
 
-// Fetching data
 useEffect(() => {
   const fetchData = async () => {
     await dispatch(fetchDetailedSpot(spotId));
@@ -184,7 +183,7 @@ const getErrors = () =>{
 
     <form onSubmit={handleSubmit}>
       <div className="section">
-        <h1>Update Spot</h1>
+        <h1>Update your Spot</h1>
         <h2>Where's your place located?</h2>
         <p>
           Guests will only get your exact address once they booked a
