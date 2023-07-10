@@ -27,8 +27,8 @@ const CreateSpotForm = () => {
 
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-  // const getErrors = () => {
+  // useEffect(() => {
+  const getErrors = () => {
     //changed to function cuz I don't want to see errors until after handleEvent
 
     const newErrors = {};
@@ -62,8 +62,8 @@ const CreateSpotForm = () => {
     if (!values.price) {
       newErrors.price = "Price is required";
     }
-    // !values.description ||
-    if ( values.description.length < 30) {
+
+    if (values.description.length < 30) {
       newErrors.description = "Description needs a minimum of 30 characters";
     }
 
@@ -119,85 +119,75 @@ const CreateSpotForm = () => {
       newErrors.previewImage4 = "Image URL must end in .png, .jpg, or .jpeg";
     }
 
-      setErrors(newErrors);
-    }, [values]);
+    // setErrors(newErrors);
+    // }, [values]);
     // changed to return newError
-    // return newErrors;
-  // };
+    return newErrors;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setValues((prevValues) => ({ ...prevValues, [name]: value }));
-    // const newErrors = getErrors();
-    // setErrors(newErrors);
-    //resetting errors
   };
   //taking the previous values, spreading them to create a new object,
   //and then overriding the value of the input field that changed.
 
+  // this fix the issues of has to double click after error but this way has to show error before submit
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // setErrors({}); ///
+    const newErrors = getErrors();
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      return null;
+    }
 
-    // const newErrors = getErrors();
-    // if (Object.keys(newErrors).length > 0) {
-      // setErrors(newErrors);
-      if (Object.keys(errors).length > 0) {
-        return;
-      }
+    const {
+      country,
+      address,
+      city,
+      state,
+      lat,
+      lng,
+      description,
+      name,
+      price,
+      // previewImage,
+      // isPreview,
+    } = values;
 
-    //   return;
-    // }
+    const spot = {
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    };
 
-    if (Object.keys(errors).length === 0) {
-      const {
-        country,
-        address,
-        city,
-        state,
-        lat,
-        lng,
-        description,
-        name,
-        price,
-        // previewImage,
-        // isPreview,
-      } = values;
+    const newSpot = await dispatch(createSpot(spot));
+    console.log("in the newSpot after dispatch createSpot", newSpot);
+    if (newSpot && newSpot.errors) {
+      setErrors(newSpot.errors);
+    } else {
+      console.log("in the else if statement");
+      const imageUrls = [
+        values.previewImage,
+        values.previewImage1,
+        values.previewImage2,
+        values.previewImage3,
+        values.previewImage4,
+      ].filter(Boolean); //only loop that is not empty URL
 
-      const spot = {
-        address,
-        city,
-        state,
-        country,
-        lat,
-        lng,
-        name,
-        description,
-        price,
-      };
-
-      const newSpot = await dispatch(createSpot(spot));
-      // console.log('in the newSpot after dispatch createSpot',newSpot)
-      if (newSpot && newSpot.errors) {
-        setErrors(newSpot.errors);
+      const newImages = await dispatch(addImageToSpot(newSpot.id, imageUrls));
+      if (newImages && newImages.errors) {
+        setErrors(newImages.errors);
       } else {
-        // console.log('in the else if statement')
-        const imageUrls = [
-          values.previewImage,
-          values.previewImage1,
-          values.previewImage2,
-          values.previewImage3,
-          values.previewImage4,
-        ].filter(Boolean);//only loop that is not empty URL
-
-
-        const newImages = await dispatch(addImageToSpot(newSpot.id, imageUrls));
-
-        if (newImages && newImages.errors) {
-          setErrors(newImages.errors);
-        } else {
-          setErrors({})
-          history.push(`/spots/${newSpot.id}`);
-        }
+        history.push(`/spots/${newSpot.id}`);
       }
     }
   };
@@ -261,7 +251,6 @@ const CreateSpotForm = () => {
               value={values.lat}
               onChange={handleInputChange}
               placeholder="Latitude"
-
             />
           </div>
           <span className="comma">,</span>
@@ -273,7 +262,6 @@ const CreateSpotForm = () => {
               value={values.lng}
               onChange={handleInputChange}
               placeholder="Longitude"
-
             />
           </div>
         </div>
@@ -342,7 +330,6 @@ const CreateSpotForm = () => {
         />
         {errors.previewImage && <p className="error">{errors.previewImage}</p>}
 
-
         <input
           name="previewImage1"
           value={values.previewImage1}
@@ -363,7 +350,6 @@ const CreateSpotForm = () => {
           <p className="error">{errors.previewImage2}</p>
         )}
 
-
         <input
           name="previewImage3"
           value={values.previewImage3}
@@ -374,7 +360,6 @@ const CreateSpotForm = () => {
           <p className="error">{errors.previewImage3}</p>
         )}
 
-
         <input
           name="previewImage4"
           value={values.previewImage4}
@@ -384,9 +369,10 @@ const CreateSpotForm = () => {
         {errors.previewImage4 && (
           <p className="error">{errors.previewImage4}</p>
         )}
-
       </div>
-      <button className="Create-Spot" type="submit">Create Spot</button>
+      <button className="Create-Spot" type="submit">
+        Create Spot
+      </button>
     </form>
   );
 };

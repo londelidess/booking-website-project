@@ -98,47 +98,50 @@ const UpdateSpotForm = () => {
     setValues((prevValues) => ({ ...prevValues, [name]: value }));
   };
 
+  // useEffect(() => {
+  //   setErrors(getErrors());
+  // }, [values]);///
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); ///
     const newErrors = getErrors();
+    setErrors(newErrors);
+
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+      // setErrors(newErrors);
       return null;
     }
 
-    if (Object.keys(errors).length === 0) {
-      const {
-        country,
-        address,
-        city,
-        state,
-        lat,
-        lng,
-        description,
-        name,
-        price,
-      } = values;
+    const {
+      country,
+      address,
+      city,
+      state,
+      lat,
+      lng,
+      description,
+      name,
+      price,
+    } = values;
 
-      const spot = {
-        id: spotId,
-        address,
-        city,
-        state,
-        country,
-        lat,
-        lng,
-        name,
-        description,
-        price,
-      };
+    const spot = {
+      id: spotId,
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    };
 
-      const newSpot = await dispatch(updateSpot(spot));
-      if (newSpot && newSpot.errors) {
-        setErrors(newSpot.errors);
-      } else {
-        history.push(`/spots/${newSpot.id}`);
-      }
+    const newSpot = await dispatch(updateSpot(spot));
+    if (newSpot && newSpot.errors) {
+      setErrors(newSpot.errors);
+    } else {
+      history.push(`/spots/${newSpot.id}`);
     }
   };
   if (!spotId) return null;
