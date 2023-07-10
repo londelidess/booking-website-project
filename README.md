@@ -470,10 +470,10 @@ Create and return a new image for a spot specified by id.
   * Body:
 
     ```json
-    {
-      "url": "image url",
-      "preview": true
-    }
+
+ {
+      "url": "["image url", "imageUrl2"]"
+ }
     ```
 
 * Successful Response
@@ -483,11 +483,18 @@ Create and return a new image for a spot specified by id.
   * Body:
 
     ```json
+  [
     {
-      "id": 1,
-      "url": "image url",
-      "preview": true
+        "id": 13,
+        "url": "image url",
+        "preview": true
+    },
+    {
+        "id": 14,
+        "url": "imageUrl2",
+        "preview": false
     }
+]
     ```
 
 * Error response: Couldn't find a Spot with the specified id

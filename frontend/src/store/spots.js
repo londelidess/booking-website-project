@@ -92,20 +92,21 @@ export const createSpot = (spot) => async (dispatch) => {
   }
 };//receiveSpot is in the reducer so to update your state with the new spot.
 
-export const addImageToSpot = (spotId, imageUrl, preview) => async (dispatch) => {
+export const addImageToSpot = (spotId, imageUrls) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${spotId}/images`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      url: imageUrl,
-      preview,
+      url: imageUrls,//array
     }),
   });
 
   if (res.ok) {
-    const newImage = await res.json();
-    dispatch(addImageToSpotAction(spotId, newImage));
-    return newImage;
+    const newImages = await res.json();
+    newImages.forEach(image => { // Dispatch ADD_IMAGE_TO_SPOT action for each new image
+      dispatch(addImageToSpotAction(spotId, image));
+    })
+    return newImages;
   } else {
     const errors = await res.json();
     return errors;
@@ -156,7 +157,7 @@ const spotsReducer = (state = initialState, action) => {
       });
       return newLoadedSpots;
     case RECEIVE_SPOT:
-      return { ...state, single:action.spot };
+      return { ...state, singleSpot:action.spot };
       case UPDATE_SPOT:
         return {
           ...state,

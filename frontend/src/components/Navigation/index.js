@@ -17,7 +17,7 @@ function Navigation({ isLoaded }) {
             <img className="logo" src={logo} alt="home" />
           </NavLink>
         </li>
-    
+
         {isLoaded && (
           <React.Fragment>
             <li>
@@ -29,7 +29,6 @@ function Navigation({ isLoaded }) {
                 )}
                 <ProfileButton
                   user={sessionUser}
-                  style={{ cursor: "pointer" }}
                 />
               </div>
             </li>

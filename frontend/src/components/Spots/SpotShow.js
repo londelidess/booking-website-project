@@ -14,7 +14,7 @@ const SpotShow = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const spot = useSelector((state) => state.spots.single);
+  const spot = useSelector((state) => state.spots.singleSpot);
   const currentUser = useSelector((state) => state.session.user);
   const reviews = useSelector((state) => state.reviews.spot);
   const userHasReview =
@@ -51,7 +51,7 @@ const SpotShow = () => {
     avgRating = (totalStars / reviews.length).toFixed(2);
   } else {
     avgRating = "New";
-  } //caluculating frontEnd.
+  } //calculating frontEnd.
 
   const renderImages = () => {
     const totalImages = 5;

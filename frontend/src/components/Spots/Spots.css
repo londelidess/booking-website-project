@@ -301,3 +301,11 @@ margin-top:10px;
 .manage-spots{
   margin-left: 40px;
 }
+/* create spot */
+.Create-Spot{
+  background-color: red;
+  color:white;
+  box-shadow: 4px 4px 4px black;
+  cursor: pointer;
+
+}
