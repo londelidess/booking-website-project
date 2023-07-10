@@ -141,7 +141,13 @@ input {
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-width:50%;
+  /* overflow: auto; */
 }
+.description{
+  word-wrap: break-word;
+}
+
 /* reserve container */
 .reserve-container {
   float: right;

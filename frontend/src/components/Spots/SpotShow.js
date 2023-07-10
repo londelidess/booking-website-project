@@ -44,7 +44,7 @@ const SpotShow = () => {
 
   // const avgRating =
   //   spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
-  //I couldn't do this ...
+  //backend
   let avgRating;
   if (reviews && reviews.length > 0) {
     const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
