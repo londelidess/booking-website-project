@@ -19,7 +19,7 @@ const ManageSpots = () => {
       .catch(() => setIsLoading(false));
   }, [dispatch]);
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <div className="centered">Loading...</div>;
   }
 
   return (

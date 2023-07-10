@@ -147,7 +147,7 @@ const UpdateSpotForm = () => {
   if (!spotId) return null;
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="centered">Loading...</div>;
   }
   return (
     <form onSubmit={handleSubmit}>
