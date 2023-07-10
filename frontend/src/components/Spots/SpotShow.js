@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
-import React, { useState, useEffect } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import React, {  useEffect,useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDetailedSpot } from "../../store/spots";
 import { fetchReviews } from "../../store/review";
@@ -14,14 +13,16 @@ const SpotShow = () => {
   const { spotId } = useParams();
   const dispatch = useDispatch();
 
+
   const spot = useSelector((state) => state.spots.single);
   // console.log("spot:", spot);
   const currentUser = useSelector((state) => state.session.user);
   // console.log("currentUser:", currentUser);
-  const reviewsObj = useSelector((state) => state.reviews.spot);
-  const reviews = reviewsObj ? Object.values(reviewsObj) : null;
+  const reviews = useSelector((state) => state.reviews.spot);
 
-  // console.log("reviews:", reviews);
+
+
+  console.log("reviews:", reviews);
 
   const userHasReview =
     currentUser && reviews?.find((review) => review.userId === currentUser.id);
@@ -29,14 +30,6 @@ const SpotShow = () => {
 
   const isSpotCreator = currentUser && currentUser.id === spot?.ownerId;
   // console.log("isSpotCreator:", isSpotCreator);
-
-  // useEffect(() => {
-  //   dispatch(fetchDetailedSpot(spotId));
-  // }, [dispatch, spotId]);
-
-  // useEffect(() => {
-  //   dispatch(fetchReviews(spotId));
-  // }, [dispatch, spotId]);
 
   useEffect(() => {
     const fetchSpotAndReviews = async () => {
@@ -50,7 +43,9 @@ const SpotShow = () => {
     };
 
     fetchSpotAndReviews();
-  }, [dispatch, spotId]);
+  }, [dispatch, spotId]); // Remove `refresh` from here
+
+
 
   const avgRating =
     spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
@@ -82,7 +77,9 @@ const SpotShow = () => {
     }
     return images;
   };
+
   if (!spot) return null;
+
   return (
     <>
       <div className="detailed-page">
@@ -159,7 +156,7 @@ const SpotShow = () => {
               <h3>{review?.updatedAt}</h3>
               <p>{review?.review}</p>
 
-              {review?.User?.id === currentUser?.id && (
+              {review?.userId === currentUser?.id && (///
                 <div className="delete-button-for-review"  >
                   <OpenModalMenuItem
                     itemText="Delete"
