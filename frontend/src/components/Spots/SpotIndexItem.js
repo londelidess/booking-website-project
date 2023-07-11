@@ -21,7 +21,7 @@ const SpotIndexItem = ({ spot }) => {
                 {avgRating}
               </div>
             </div>
-            <div>${spot.price} night</div>
+            <div>${spot.price.toFixed(2)} night</div>
           </div>
         </div>
       </Link>
