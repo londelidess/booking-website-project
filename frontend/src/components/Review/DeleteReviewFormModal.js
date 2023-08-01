@@ -2,14 +2,15 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { deleteReview } from "../../store/review";
-
-function DeleteReviewFormModal({ reviewId }) {
+import { fetchDetailedSpot } from "../../store/spots";
+function DeleteReviewFormModal({ reviewId,spotId }) {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
   const sessionUser = useSelector((state) => state.session.user);
 
   const handleDelete = async () => {
     await dispatch(deleteReview(reviewId));
+    await dispatch(fetchDetailedSpot(spotId))
     closeModal();
   };
 

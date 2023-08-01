@@ -10,6 +10,7 @@ function DeleteSpotFormModal({ spotId }) {
 
   const handleDelete = async () => {
     await dispatch(deleteSpot(spotId));
+    // await dispatch(fetchDetailedSpot(spotId))
     closeModal();
   };
 

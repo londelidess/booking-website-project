@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
-import { createReview } from "../../store/review";
+import { createReview, fetchReviews } from "../../store/review";
+import { fetchDetailedSpot } from "../../store/spots";
 import StarRatingInput from "./starRatingInput";
 import "./Review.css";
 
@@ -9,27 +10,35 @@ function PostReviewFormModal({ spotId }) {
   const [comment, setComment] = useState("");
   const [stars, setStars] = useState(0);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // new state variable for loading status
 
   const dispatch = useDispatch();
   const { closeModal } = useModal();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const reviewResponse = await dispatch(
       createReview(spotId, { review: comment, stars })
     );
 
     if (reviewResponse.message) {
       setError(reviewResponse.message);
+
       return;
     }
+    await dispatch(fetchDetailedSpot(spotId));
+    await dispatch(fetchReviews(spotId));
+    setIsLoading(false);
     closeModal();
   };
 
   if (!spotId) return null;
 
   const isCommentValid = comment.length >= 10;
-
+  if (isLoading) {
+    return <div className="centered">Loading...</div>;
+  }
   return (
     <>
       <div className="review-form">
