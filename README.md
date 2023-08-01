@@ -480,7 +480,7 @@ Create and return a new image for a spot specified by id.
 
     ```json
     {
-      "url": "["image url", "imageUrl2"]"
+      "url": "['image url', 'imageUrl2']"
     }
     ```
 

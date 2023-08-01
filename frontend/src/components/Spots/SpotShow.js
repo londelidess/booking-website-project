@@ -42,16 +42,16 @@ const SpotShow = () => {
     return <div className="centered">Loading...</div>;
   }
 
-  // const avgRating =
-  //   spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
+  const avgRating =
+    spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating?.toFixed(2);
   //backend
-  let avgRating;
-  if (reviews && reviews.length > 0) {
-    const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
-    avgRating = (totalStars / reviews.length).toFixed(2);
-  } else {
-    avgRating = "New";
-  } //calculating frontEnd.
+  // let avgRating;
+  // if (reviews && reviews.length > 0) {
+  //   const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
+  //   avgRating = (totalStars / reviews.length).toFixed(2);
+  // } else {
+  //   avgRating = "New";
+  // } //calculating frontEnd.
 
   const renderImages = () => {
     const totalImages = 5;
@@ -163,7 +163,7 @@ const SpotShow = () => {
                   <OpenModalMenuItem
                     itemText="Delete"
                     modalComponent={
-                      <DeleteReviewFormModal reviewId={review.id} />
+                      <DeleteReviewFormModal reviewId={review.id} spotId={spotId} />
                     }
                   />
                 </div>
