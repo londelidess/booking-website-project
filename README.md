@@ -1,4 +1,4 @@
-# `<booking-website-project>`
+# `Stay <booking-website-project>`
 
 ## INTRODUCTION
 ![homepage][def2]
