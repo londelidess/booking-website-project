@@ -21,7 +21,7 @@ router.use("/reviews", reviewsRouter);
 
 router.use("/bookings", bookingsRouter);
 
-router.use("/", imagesRouter);
+router.use("/images", imagesRouter);
 
 // router.post("/test", (req, res) => {
 //   res.json({ requestBody: req.body });

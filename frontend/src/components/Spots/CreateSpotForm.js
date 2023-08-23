@@ -1,6 +1,7 @@
 import React, {  useState } from "react";
 import { useDispatch } from "react-redux";
-import { createSpot, addImageToSpot } from "../../store/spots";
+import { createSpot } from "../../store/spots";
+import { uploadImages } from "../../store/images"
 import { useHistory } from "react-router-dom";
 import "./Spots.css";
 
@@ -17,14 +18,8 @@ const CreateSpotForm = () => {
     name: "",
     price: "",
     description: "",
-    previewImage: "",
-    previewImage1: "",
-    previewImage2: "",
-    previewImage3: "",
-    previewImage4: "",
-    // isPreview: false,
   });
-
+  const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
 
   // useEffect(() => {
@@ -67,58 +62,6 @@ const CreateSpotForm = () => {
       newErrors.description = "Description needs a minimum of 30 characters";
     }
 
-    if (!values.previewImage) {
-      newErrors.previewImage = "Preview image is required.";
-    } else if (
-      !(
-        values.previewImage.endsWith(".jpg") ||
-        values.previewImage.endsWith(".jpeg") ||
-        values.previewImage.endsWith(".png")
-      )
-    ) {
-      newErrors.previewImage = "Image URL must end in .png, .jpg, or .jpeg";
-    }
-    if (
-      values.previewImage1 &&
-      !(
-        values.previewImage1.endsWith(".jpg") ||
-        values.previewImage1.endsWith(".jpeg") ||
-        values.previewImage1.endsWith(".png")
-      )
-    ) {
-      newErrors.previewImage1 = "Image URL must end in .png, .jpg, or .jpeg";
-    }
-    if (
-      values.previewImage2 &&
-      !(
-        values.previewImage2.endsWith(".jpg") ||
-        values.previewImage2.endsWith(".jpeg") ||
-        values.previewImage2.endsWith(".png")
-      )
-    ) {
-      newErrors.previewImage2 = "Image URL must end in .png, .jpg, or .jpeg";
-    }
-    if (
-      values.previewImage3 &&
-      !(
-        values.previewImage3.endsWith(".jpg") ||
-        values.previewImage3.endsWith(".jpeg") ||
-        values.previewImage3.endsWith(".png")
-      )
-    ) {
-      newErrors.previewImage3 = "Image URL must end in .png, .jpg, or .jpeg";
-    }
-    if (
-      values.previewImage4 &&
-      !(
-        values.previewImage4.endsWith(".jpg") ||
-        values.previewImage4.endsWith(".jpeg") ||
-        values.previewImage4.endsWith(".png")
-      )
-    ) {
-      newErrors.previewImage4 = "Image URL must end in .png, .jpg, or .jpeg";
-    }
-
     // setErrors(newErrors);
     // }, [values]);
     // changed to return newError
@@ -151,8 +94,6 @@ const CreateSpotForm = () => {
       description,
       name,
       price,
-      // previewImage,
-      // isPreview,
     } = values;
 
     const spot = {
@@ -173,15 +114,8 @@ const CreateSpotForm = () => {
       setErrors(newSpot.errors);
     } else {
       console.log("in the else if statement");
-      const imageUrls = [
-        values.previewImage,
-        values.previewImage1,
-        values.previewImage2,
-        values.previewImage3,
-        values.previewImage4,
-      ].filter(Boolean); //only loop that is not empty URL
 
-      const newImages = await dispatch(addImageToSpot(newSpot.id, imageUrls));
+      const newImages = await dispatch(uploadImages(newSpot.id, images));
       if (newImages && newImages.errors) {
         setErrors(newImages.errors);
       } else {
@@ -189,6 +123,11 @@ const CreateSpotForm = () => {
       }
     }
   };
+
+  const updateFiles = e => {
+  const files = e.target.files;
+  setImages(files);
+};
 
   return (
     <form onSubmit={handleSubmit}>
@@ -206,7 +145,6 @@ const CreateSpotForm = () => {
           placeholder="Country"
         />
         {errors.address && <p className="error">{errors.address}</p>}
-
         <label htmlFor="address">Street Address</label>
         <input
           name="address"
@@ -215,7 +153,6 @@ const CreateSpotForm = () => {
           placeholder="Street Address"
         />
         {errors.address && <p className="error">{errors.address}</p>}
-
         <div className="field-group">
           <div style={{ flex: 0.7 }}>
             <label htmlFor="city">City</label>
@@ -239,7 +176,6 @@ const CreateSpotForm = () => {
             />
           </div>
         </div>
-
         <div className="field-group">
           <div style={{ flex: 0.5 }}>
             <label htmlFor="lat">Latitude</label>
@@ -264,14 +200,12 @@ const CreateSpotForm = () => {
           </div>
         </div>
       </div>
-
       <div className="section">
         <h2>Describe your place to guests</h2>
         <p>
           Mention the best features of your space, any special amenities like
           fast wifi or parking, and what you love about the neighborhood.
         </p>
-
         <textarea
           name="description"
           value={values.description}
@@ -282,14 +216,12 @@ const CreateSpotForm = () => {
         />
         {errors.description && <p className="error">{errors.description}</p>}
       </div>
-
       <div className="section">
         <h2>Create a title for your spot</h2>
         <p>
           Catch guests' attention with a spot title that highlights what makes
           your place special.
         </p>
-
         <input
           name="name"
           value={values.name}
@@ -315,58 +247,19 @@ const CreateSpotForm = () => {
         </div>
         {errors.price && <p className="error">{errors.price}</p>}
       </div>
-
       <div className="section">
         <h2>Liven up your spot with photos</h2>
         <p>Submit a link to at least one photo to publish your spot.</p>
-
+        <p>Please provide at least one image. File format has to be .jpg, .jpeg or .png</p>
         <input
-          name="previewImage"
-          value={values.previewImage}
-          onChange={handleInputChange}
-          placeholder="Preview Image URL"
+          type="file"
+          name="Image"
+          accept=".jpg, .jpeg, .png"
+          multiple
+          onChange={updateFiles}
         />
-        {errors.previewImage && <p className="error">{errors.previewImage}</p>}
+        {/* {errors.previewImage && <p className="error">{errors.previewImage}</p>} */}
 
-        <input
-          name="previewImage1"
-          value={values.previewImage1}
-          onChange={handleInputChange}
-          placeholder="Image URL"
-        />
-        {errors.previewImage1 && (
-          <p className="error">{errors.previewImage1}</p>
-        )}
-
-        <input
-          name="previewImage2"
-          value={values.previewImage2}
-          onChange={handleInputChange}
-          placeholder="Image URL"
-        />
-        {errors.previewImage2 && (
-          <p className="error">{errors.previewImage2}</p>
-        )}
-
-        <input
-          name="previewImage3"
-          value={values.previewImage3}
-          onChange={handleInputChange}
-          placeholder="Image URL"
-        />
-        {errors.previewImage3 && (
-          <p className="error">{errors.previewImage3}</p>
-        )}
-
-        <input
-          name="previewImage4"
-          value={values.previewImage4}
-          onChange={handleInputChange}
-          placeholder="Image URL"
-        />
-        {errors.previewImage4 && (
-          <p className="error">{errors.previewImage4}</p>
-        )}
       </div>
       <button className="Create-Spot" type="submit">
         Create Spot
@@ -374,5 +267,4 @@ const CreateSpotForm = () => {
     </form>
   );
 };
-
 export default CreateSpotForm;

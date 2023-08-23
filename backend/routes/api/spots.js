@@ -6,6 +6,7 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const {sequelize,Op} = require('sequelize')
 const formattedDate = require('../../utils/date.js');
+const { multipleFilesUpload, multipleMulterUpload, retrievePrivateFile, deleteFile } = require("../../awsS3");
 
 const validateCreateSpots = [///this is for body
   check("address")
@@ -87,7 +88,7 @@ router.get('/current', requireAuth, async (req, res) => {
         description: spot.description,
         price: parseFloat(spot.price),
         createdAt: formattedDate(spot.createdAt,true),//spot.createdAt is js object since this is in return
-      updatedAt: formattedDate(spot.updatedAt,true),
+        updatedAt: formattedDate(spot.updatedAt,true),
         avgRating: reviewAvg,
         previewImage: imageUrl
       };
@@ -226,10 +227,13 @@ router.put('/:spotId', requireAuth, validateCreateSpots, async (req, res) => {
 
   //   return res.json(response);
   // });
-//Add imageURL array
-  router.post('/:spotId/images', requireAuth, async (req, res, next) => {
+
+//Add images
+  router.post('/:spotId/images',
+   requireAuth,
+   multipleMulterUpload("images"),
+   async (req, res, next) => {
     const spotId = parseInt(req.params.spotId, 10);
-    const imageUrls = req.body.url; // an array of urls
     const spot = await Spot.findByPk(spotId);
 
     if (!spot) {
@@ -240,20 +244,22 @@ router.put('/:spotId', requireAuth, validateCreateSpots, async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });
     }
 
+    const keys = await multipleFilesUpload({ files: req.files });
     const createdImages = [];
 
-    for(let i = 0; i < imageUrls.length; i++) {
-      const url = imageUrls[i];
+    for(let i = 0; i < keys.length; i++) {
+      const url = keys[i];
       const isPreview = i === 0; // Set the first image as the preview
+
       const image = await SpotImage.create({
         spotId,
-        url,
+        url: url, //returned key from AWS
         preview: isPreview,
       });
 
       const response = {
         id: image.id,
-        url: image.url,
+        url: retrievePrivateFile(image.url),
         preview: image.preview,
       }
 
@@ -450,7 +456,7 @@ const spotsFormatted = {
   description: spot.description,
   price: parseFloat(spot.price),
   createdAt: formattedDate(new Date(spot.createdAt), true),// need to make string to obj
-    updatedAt: formattedDate(new Date(spot.updatedAt), true),
+  updatedAt: formattedDate(new Date(spot.updatedAt), true),
   numReviews: numReviews,
   avgStarRating: reviewAvg,
   SpotImages: spot.SpotImages.map(img => {

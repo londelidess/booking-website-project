@@ -92,18 +92,26 @@ export const createSpot = (spot) => async (dispatch) => {
   }
 };//receiveSpot is in the reducer so to update your state with the new spot.
 
-export const addImageToSpot = (spotId, imageUrls) => async (dispatch) => {
+export const addImageToSpot = (spotId, imageFiles) => async (dispatch) => {
+  const formData = new FormData();
+
+  Array.from(imageFiles).forEach((file) => {
+    formData.append("images", file);  // "images" is the key that multer looks for
+  });
+
   const res = await csrfFetch(`/api/spots/${spotId}/images`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      url: imageUrls,//array
-    }),
+    // headers: { 'Content-Type': 'application/json' },
+    // body: JSON.stringify({
+    //   url: imageUrls,//array
+    // }),
+    body: formData
   });
 
   if (res.ok) {
     const newImages = await res.json();
-    newImages.forEach(image => { // Dispatch ADD_IMAGE_TO_SPOT action for each new image
+    // Dispatch ADD_IMAGE_TO_SPOT action for each new image
+    newImages.forEach(image => {
       dispatch(addImageToSpotAction(spotId, image));
     })
     return newImages;
@@ -158,47 +166,47 @@ const spotsReducer = (state = initialState, action) => {
       return newLoadedSpots;
     case RECEIVE_SPOT:
       return { ...state, singleSpot:action.spot };
-      case UPDATE_SPOT:
-        return {
-          ...state,
-          allSpots: {
-            ...state.allSpots,
-            [action.spot.id]: action.spot,
-          },
-          singleSpot: state.singleSpot.id === action.spot.id ? action.spot : state.singleSpot,
-        };
-      case REMOVE_SPOT:
-        const newAllSpots = { ...state.allSpots };
-        delete newAllSpots[action.spotId];
-        return {
-          ...state,
-          allSpots: newAllSpots,
-          singleSpot: state.singleSpot.id === action.spotId ? {} : state.singleSpot,
-        };
-        case ADD_IMAGE_TO_SPOT: {
-          const { spotId, image } = action.payload;
-          if (!state.allSpots[spotId]) {
-            return state;
-          }
-          return {
-            ...state,
-            allSpots: {
-              ...state.allSpots,
-              [spotId]: {
-                ...state.allSpots[spotId],
-                images: [...(state.allSpots[spotId].images || []), image],
-              },
-            },
-            singleSpot: state.singleSpot.id === spotId ?
-            {
-              ...state.singleSpot,
-              images: [...(state.singleSpot.images || []), image],
-            }
-            : state.singleSpot,
-          };
-        }
-      default:
-        return state;
+    case UPDATE_SPOT:
+      return {
+        ...state,
+        allSpots: {
+          ...state.allSpots,
+          [action.spot.id]: action.spot,
+        },
+        singleSpot: state.singleSpot.id === action.spot.id ? action.spot : state.singleSpot,
+      };
+    case REMOVE_SPOT:
+      const newAllSpots = { ...state.allSpots };
+      delete newAllSpots[action.spotId];
+      return {
+        ...state,
+        allSpots: newAllSpots,
+        singleSpot: state.singleSpot.id === action.spotId ? {} : state.singleSpot,
+      };
+    // case ADD_IMAGE_TO_SPOT: {
+    //   const { spotId, image } = action.payload;
+    //   if (!state.allSpots[spotId]) {
+    //     return state;
+    //   }
+    //   return {
+    //     ...state,
+    //     allSpots: {
+    //       ...state.allSpots,
+    //       [spotId]: {
+    //         ...state.allSpots[spotId],
+    //         images: [...(state.allSpots[spotId].images || []), image],
+    //       },
+    //     },
+    //     singleSpot: state.singleSpot.id === spotId ?
+    //     {
+    //       ...state.singleSpot,
+    //       images: [...(state.singleSpot.images || []), image],
+    //     }
+    //     : state.singleSpot,
+    //   };
+    // }
+    default:
+      return state;
     }
   };
 

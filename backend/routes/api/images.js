@@ -5,6 +5,23 @@ const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const sequelize = require('sequelize')
+const { multipleFilesUpload, multipleMulterUpload, retrievePrivateFile, deleteFile } = require("../../awsS3");
+
+//Get all images
+router.get(
+  '/:spotId',
+  async (req, res) => {
+    const images = await SpotImage.findAll({where: { spotId: req.params["spotId"] }});
+    const imageObjects = images.map(image => {
+      return {
+        id: image.id,
+        url: retrievePrivateFile(image.key)
+      };
+    });
+
+    return res.json(imageObjects);
+  }
+);
 
 // Delete a Spot Image
 router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
