@@ -1,49 +1,5 @@
 # `STAY <booking-website-project>`
 
-
-
-Features
-User Authentication
-Sign up: Users can create a new account using their email address.
-Log in/Log out: Users can log in to access their data and log out when they're done.
-Demo User Login: For those who just want to explore the site, we have a Demo User feature.
-
-Landing Page
-Tile list of all spots, each tile containing a thumbnail image, the city, and the state of the spot.
-The star rating is displayed as "New" for spots without any reviews, or the average star rating of the spot is displayed as a decimal for those with reviews.
-Display the price per night for each spot.
-
-Spot Details
-The spot detail page includes the spot's name, location, images, host information, description, and a reservation callout box displaying the price per night and a "Reserve" button.
-The "Reserve" button displays an alert saying "Feature coming soon" when clicked.
-
-Ratings and Reviews
-Display of average star rating and total review count on both the landing page and spot detail page.
-List of all reviews for a spot.
-
-Spot Creation
-Logged-in users can create spots by inputting location details, descriptions, titles, pricing, and images.
-
-Review Posting
-The "Post Your Review" button is shown on the spot detail page for logged-in users.
-Successful review submissions update the reviews list and review summary info on the spot's detail page.
-
-Spot Management
-The "Manage Spots" selection in the user dropdown menu navigates to a page displaying all spots created by the user.
-If the user hasn't posted any spots, a "Create a New Spot" link is displayed.
-Each spot tile on the management page includes "Update" and "Delete" buttons so the user can manage.
-
-Spot Updating
-Clicking "Update" let the user by inputting updated location details, descriptions, titles, pricing, and images and show updated information in detailed page.
-
-Spot and Review Deletion
-The User can delete spots and reviews they create.
-
-
-# `STAY <booking-website-project>`
-
-Welcome to the booking-website-project wiki
-
 My Project is a full-stack web application built with Express API backend, React, and Redux. The application is designed to provide a Booking Website. 
 
 ## Technologies Used
