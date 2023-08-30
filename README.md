@@ -1,24 +1,5 @@
 # `STAY <booking-website-project>`
 
-## INTRODUCTION
-![homepage][def2]
-
-Introduction
-
-Welcome to the booking-website-project wiki
-
-My Project is a full-stack web application built with Express API backend, React, and Redux. The application is designed to provide a Booking Website. 
-
-Technologies Used
-Frontend: React, Redux
-Backend: Express API
-Database: PostgreSQL
-
-Running the Application Locally
-Clone the repository: git clone (https://github.com/londelidess/booking-website-project)
-Navigate to the project directory: cd backend / cd frontend.
-Install all the necessary packages and dependencies using npm: npm install.
-Start the application: npm start.
 
 
 Features
@@ -58,58 +39,6 @@ Clicking "Update" let the user by inputting updated location details, descriptio
 Spot and Review Deletion
 The User can delete spots and reviews they create.
 
-
-During the project, I had difficulty with some features.
-Back-End
-I needed date modification and created a separate middleware function to solve this issue. The code I'm most proud of is the formatted date callback function, which caters to two different response styles based on given parameters. However, it could be improved for better robustness as it requires the correct data type to function as intended.
-
-```js
-module.exports = function formattedDate(date, includeTime = false) {
-  let year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  let day = date.getDate();
-
-  if (month < 10) month = `0${month}`;
-  if (day < 10) day = `0${day}`;
-
-  if (includeTime === true) {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
-
-    if (hours < 10) hours = `0${hours}`;
-    if (minutes < 10) minutes = `0${minutes}`;
-    if (seconds < 10) seconds = `0${seconds}`;
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  }
-
-  return `${year}-${month}-${day}`;
-}
-```
-
-
- The 'Get All Spots' query was a segment where I was able to maintain clean and maintainable code. I also constructed an error object for better debugging and code flow understanding.
-
-The biggest challenge was the database setup and deployment, teaching me the importance of proper syntax and usage. It highlighted the need for understanding to avoid errors leading to frequent schema drops. I discovered that it's difficult to create logical structures without complete mastery over syntax. Google was my primary tool for research, helping me understand concepts better and solve problems more efficiently.
-
-If I were to redo the project, I would increase the use of error-handling middleware for better debugging and user experience. There were also tasks such as fixing the time function that I could not complete due to time constraints. I am looking forward to handling more potential error cases to make my API more robust and reliable in the future.
-
-I learned the importance of managing data types in request bodies in backend development and found creating the logic to implement desired functionalities rewarding. Though this project was a great learning experience, the guidance from senior developers remains invaluable. For future projects, I aim to be more independent by breaking them into smaller steps and following a structured workflow. I am also planning to add restrictions to the data types users can input into the API to make it more user-friendly. My advice to other developers would be to understand how to reformat responses before using res.json().
-
-Front-End 
-Designing the reducer with an initial state certainly amplified the efficiency of my project. However, visualizing the Redux store shape presented a significant challenge. I often found myself needing to modify it in the middle of production, which in turn required alterations in various file logics to grab store data. This process, albeit inefficient, provided me with valuable experience in managing data types.
-
-Another hurdle was figuring out how to efficiently use multiple thunk actions at the same time in conjunction with backend APIs. In several instances, I had to modify the backend API logic to facilitate simpler and more effective use of thunk actions on the frontend. I realized how pivotal it is to understand and manage data types effectively in full-stack development.
-
-Moving forward, I aim to invest more time in the comprehensive planning of both frontend and backend aspects simultaneously. This will prevent any loss of direction during the production phase and further enhance the efficiency of my projects. It's evident to me now that successful development is largely about managing and connecting data types accurately across the entire stack.
-
-Front-End
-Designing the reducer with an initial state certainly amplified the efficiency of my project. However, visualizing the Redux store shape presented a significant challenge. I often found myself needing to modify it in the middle of production, which in turn required alterations in various file logics to grab store data. This process, albeit inefficient, provided me with valuable experience in managing data types.
-
-Another hurdle was figuring out how to efficiently use multiple thunk actions at the same time in conjunction with backend APIs. In several instances, I had to modify the backend API logic to facilitate simpler and more effective use of thunk actions on the frontend. I realized how pivotal it is to understand and manage data types effectively in full-stack development.
-
-Moving forward, I aim to invest more time in the comprehensive planning of both frontend and backend aspects simultaneously. This will prevent any loss of direction during the production phase and further enhance the efficiency of my projects. It's evident to me now that successful development is largely about managing and connecting data types accurately across the entire stack.
 
 # `STAY <booking-website-project>`
 
@@ -1629,6 +1558,8 @@ Return spots filtered by query parameters.
       }
     }
     ```
+
+
 
 [def]: ./images/airbnb_dbdiagram.png
 [def2]:./images/image-of-home.png
