@@ -7,8 +7,7 @@ Introduction
 
 Welcome to the booking-website-project wiki
 
-My Project is a full-stack web application built with Express API backend, React, and Redux. The application is designed to provide Booking Website. 
-![image-of-home](https://github.com/londelidess/booking-website-project/assets/121207128/63daa558-b68c-4440-aa05-c6999dedd3e8)
+My Project is a full-stack web application built with Express API backend, React, and Redux. The application is designed to provide a Booking Website. 
 
 Technologies Used
 Frontend: React, Redux
@@ -111,7 +110,9 @@ Designing the reducer with an initial state certainly amplified the efficiency o
 Another hurdle was figuring out how to efficiently use multiple thunk actions at the same time in conjunction with backend APIs. In several instances, I had to modify the backend API logic to facilitate simpler and more effective use of thunk actions on the frontend. I realized how pivotal it is to understand and manage data types effectively in full-stack development.
 
 Moving forward, I aim to invest more time in the comprehensive planning of both frontend and backend aspects simultaneously. This will prevent any loss of direction during the production phase and further enhance the efficiency of my projects. It's evident to me now that successful development is largely about managing and connecting data types accurately across the entire stack.
+## Database Schema Design
 
+![dataschema][def]
 
 [def]: ./images/airbnb_dbdiagram.png
 [def2]:./images/image-of-home.png
