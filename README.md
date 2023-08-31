@@ -59,12 +59,12 @@ Logged-in Users can
 * Delete/Cancel their booking
 
 ## Backend 
-## Database Schema Design
+### Database Schema Design
 
 ![dataschema][def]
 
-## API Documentation
-## USER AUTHENTICATION/AUTHORIZATION
+### API Documentation
+### USER AUTHENTICATION/AUTHORIZATION
 
 ### All endpoints that require authentication
 
